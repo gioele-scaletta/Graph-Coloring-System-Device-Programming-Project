@@ -1,0 +1,24 @@
+HEAD: https://github.com/graphcoloring/HEAD
+
+MCTS for graph coloring parallel e C++:   https://github.com/bnegreve/nrpa
+
+Learning Combinatorial Optimization Algorithms over Graphs" Interessante :
+https://github.com/Hanjun-Dai/graphnn
+https://github.com/Hanjun-Dai/graph_comb_opt
+https://github.com/devsisters/pointer-network-tensorflow
+
+
+DEEP
+
+Coloring big graphj with alpha go zero: https://github.com/AdrienBenamira/k_coloring_graph_AlphaZeroGo
+
+Tesi Solving Graph Coloring Problem with Reinforcement Learning https://github.com/barisbatuhan/Graph_Coloring_with_RL
+
+OpenGraphGym: A Parallel Reinforcement Learning Framework for Graph (MA PHYTON): https://github.com/wz26/OpenGraphGym
+
+
+less related
+
+(GO: https://github.com/leela-zero/leela-zero)(but unrelated to graphs)
+
+PARALLEL MCTS IN C++: https://github.com/kritika-gupta/parallel-monte-carlo-tree-search)(but unrelated to graphs)
