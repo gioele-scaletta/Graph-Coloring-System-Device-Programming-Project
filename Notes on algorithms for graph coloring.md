@@ -61,3 +61,27 @@
   * *Coloring phase*: each vertex looks around at its uncolored neighbors and when it discovers it has the highest weights, it colors itself using the lowest available color in its neighborhood
 * Both phases can be parallelized
 * Finds better solutions with respect to the other algorithms (smallest number of colors), but it takes longer
+
+
+
+## Monte Carlo Search algorithms
+
+#### Graph Coloring as a Monte Carlo Search problem
+
+* A **move** consists in assigning a color to an uncolored vertex of the graph
+* At each step, consider only legal moves for a node (nodes are ordered randomly or with more advanced heuristics)
+* The **score** counts the number of monochromatic edges
+* The algorithms generate a large number of random sequences of branches decisions and then return the best one according to a score function. Techniques are used to improve the random generation of sequences
+
+#### Nested Monte Carlo Search (NMCS)
+
+* At each step, choose a move according to the probabilities given by a policy that remains the same for the entire algorithm. For each possible move in the policy, create a complete solution by sampling from the policy and choose the move that produces the best final result.
+
+* Different level of recursion, the lowest ones generate a large number of low quality sequences, the higher ones produce high quality sequence using the results of lower levels
+
+#### Nested Rollout Policy Adaptation (NRPA)
+
+* The policy is learned during the search. Initially, it is uniform, and later is improved using gradient descent steps based on the best sequence discovered so far. 
+
+* Different level of recursion, the lowest ones generate a large number of low quality sequences, the higher ones produce high quality sequence using the results of lower levels
+
