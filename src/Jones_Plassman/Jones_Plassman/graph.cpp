@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <atomic>
+#include <condition_variable>
 
 using namespace std;
 
@@ -144,7 +146,6 @@ void graph::JonesPlassmanColoring()
 
 void graph::JonesPlassmanColoringParallel()
 {
-
 	graph U = graph(*this);
 	// Check how many threads can be launched concurrently depending on the hardware setup
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
@@ -154,6 +155,7 @@ void graph::JonesPlassmanColoringParallel()
 	U.assignRandomWeights();
 
 	while (U.getNodesNumber() > 0) {
+		int launched_threads = 0, terminated_threads = 0;
 		vector<thread> threadPool;
 		vector<int> keys;
 		n_thread = 0;
@@ -163,7 +165,7 @@ void graph::JonesPlassmanColoringParallel()
 		// Launch a different thread for each node (check if it is local max and, if so, color it and remove it from the list)
 		for (vector<int>::iterator it = keys.begin(); it != keys.end(); ++it) {
 			threadPool.emplace_back([it, &U, this] {checkAndColorNode(*it, &U);});
-			n_thread++;
+
 			if (n_thread == maxThreads) {
 				// Wait for termination of all threads
 				for (auto& t : threadPool)
@@ -173,12 +175,9 @@ void graph::JonesPlassmanColoringParallel()
 			}
 		}
 		// Wait for termination of remaining threads
-		
 		for (auto& t : threadPool)
 			t.join();
-		
 	}
-
 }
 
 bool graph::checkColoring()

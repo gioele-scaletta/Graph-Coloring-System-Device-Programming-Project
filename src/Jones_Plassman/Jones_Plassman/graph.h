@@ -39,6 +39,7 @@ private:
 private:
 	map<int, node> _nodes;
 	vector<edge> _edges;
-	mutex _mtx;
+	mutex _mtx, _cv_m;
+	condition_variable _cv;
 };
 

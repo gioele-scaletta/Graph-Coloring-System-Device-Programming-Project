@@ -10,7 +10,7 @@ int main() {
 	double time_not_parallel, time_parallel;
 	graph myGraph = graph();
 
-	myGraph.readFileDIMACS("../../../benchmark/sigmod08/ecoo_dag_uniq.gra");
+	myGraph.readFileDIMACS("../../../../benchmark/manual/v100.gra");
 
 	start = clock();
 	myGraph.JonesPlassmanColoringParallel();
