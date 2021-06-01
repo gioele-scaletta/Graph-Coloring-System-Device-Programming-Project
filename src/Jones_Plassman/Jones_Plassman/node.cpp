@@ -40,11 +40,13 @@ int node::getDegree()
 
 int node::getColor()
 {
+	shared_lock<shared_mutex> lock(_mtx);
 	return _color;
 }
 
 void node::setColor(int color)
 {
+	unique_lock<shared_mutex> lock(_mtx);
 	_color = color;
 }
 
@@ -74,6 +76,16 @@ int node::getWeight()
 vector<int> node::getAdjList()
 {
 	return _adj_nodes;
+}
+
+shared_mutex * node::getPointerToMutexColor()
+{
+	return &_mtx;
+}
+
+int node::getId()
+{
+	return _id;
 }
 
 bool node::operator==(const int& id)

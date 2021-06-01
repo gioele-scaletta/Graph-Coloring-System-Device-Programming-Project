@@ -122,50 +122,52 @@ void graph::readFileDIMACS(string fileName)
 
 void graph::JonesPlassmanColoring()
 {
+// Assign a random weight to each node 
+	this->assignRandomWeights();
+	bool exit = false;
 
-	graph U = graph(*this);
 
-	// Assign a random weight to each node 
-	U.assignRandomWeights();
+	while (!exit) {
+		exit = true;
 
-	while (U.getNodesNumber() > 0) {
-		map<int, node>::iterator it = U._nodes.begin();
-		while (it != U._nodes.end()) {
-			if (U.isLocalMaximum(it->first)) {
-				this->_nodes.find(it->first)->second.setColor(this->getMinColor(it->first));
-				U.removeNode(it->first);
-				it = U._nodes.erase(it);
+		for (map<int, node>::iterator it = this->_nodes.begin(); it != this->_nodes.end(); ++it) {
+			
+			if (it->second.getColor() == -1) {
+				exit = false;
+				int min_color = this->isLocalMaximum(it->second);
+				if (min_color != -1) {
+					// Use a lock to modify the common data structure
+					it->second.setColor(min_color);
+				}
 			}
-			else
-				++it;
 		}
 	}
-
 }
 
-
+/*
 void graph::JonesPlassmanColoringParallel()
 {
-	graph U = graph(*this);
 	// Check how many threads can be launched concurrently depending on the hardware setup
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
 	int n_thread = 0;
 
 	// Assign a random weight to each node 
-	U.assignRandomWeights();
+	this->assignRandomWeights();
+	bool exit = false;
 
-	while (U.getNodesNumber() > 0) {
-		int launched_threads = 0, terminated_threads = 0;
+	while (!exit) {
+		exit = true;
 		vector<thread> threadPool;
-		vector<int> keys;
 		n_thread = 0;
-		// Collect keys of nodes
-		for (map<int, node>::iterator it = U._nodes.begin(); it != U._nodes.end(); ++it)
-			keys.push_back(it->first);
-		// Launch a different thread for each node (check if it is local max and, if so, color it and remove it from the list)
-		for (vector<int>::iterator it = keys.begin(); it != keys.end(); ++it) {
-			threadPool.emplace_back([it, &U, this] {checkAndColorNode(*it, &U);});
-
+		
+		// Launch a different thread for each node (check if it is local max and, if so, color it)
+		for (map<int, node>::iterator it = this->_nodes.begin(); it != this->_nodes.end(); ++it) {
+			
+			if (it->second.getColor() == -1) {
+				exit = false;
+				threadPool.emplace_back([it, this] {checkAndColorNode(it->second);});
+				n_thread++;
+			}
 			if (n_thread == maxThreads) {
 				// Wait for termination of all threads
 				for (auto& t : threadPool)
@@ -180,14 +182,92 @@ void graph::JonesPlassmanColoringParallel()
 	}
 }
 
-bool graph::checkColoring()
+*/
+
+/*
+void graph::JonesPlassmanColoringParallel()
 {
+	// Check how many threads can be launched concurrently depending on the hardware setup
+	const unsigned int maxThreads = std::thread::hardware_concurrency();
+	//int n_thread = 0;
+
+	// Assign a random weight to each node 
+	this->assignRandomWeights();
+	bool exit = false;
+
+	while (!exit) {
+		exit = true;
+		vector<thread> threadPool;
+		_n_thread = 0;
+
+		// Launch a different thread for each node (check if it is local max and, if so, color it)
+		for (map<int, node>::iterator it = this->_nodes.begin(); it != this->_nodes.end(); ++it) {
+
+			if (it->second.getColor() == -1) {
+				exit = false;
+				thread t([it, this] {checkAndColorNode(it->second);});
+				t.detach();
+				lock_guard<mutex> lck(_mtx);
+				_n_thread++;
+			}
+			
+			unique_lock<mutex> lck(_mtx);
+			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads;});
+		}
+		// Wait for termination of remaining threads
+		unique_lock<std::mutex> lck(_mtx);
+		_cv.wait(lck, [this] {return _n_thread == 0;});
+	}
+
+}
+*/
+
+void graph::JonesPlassmanColoringParallel()
+{
+	// Check how many threads can be launched concurrently depending on the hardware setup
+	const unsigned int maxThreads = std::thread::hardware_concurrency();
+	//int n_thread = 0;
+	const int nodes_per_thread = floor(_nodes.size() / maxThreads) + 1;
+	// Assign a random weight to each node 
+	this->assignRandomWeights();
+
+	while (!_exit) {
+		_exit = true;
+		vector<thread> threadPool;
+		_n_thread = 0;
+
+		for (int from = 0; from < _nodes.size(); from += nodes_per_thread) {
+			int to = from + nodes_per_thread;
+			if (to > _nodes.size())
+				to = _nodes.size();
+			
+			thread t([this, from, to] {checkAndColorListOfNodes(from, to);});
+			t.detach();
+			{
+				lock_guard<mutex> lck(_mtx);
+				_n_thread++;
+			}
+			unique_lock<mutex> lck(_mtx);
+			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads;});
+		}
+		// Wait for termination of remaining threads
+		unique_lock<std::mutex> lck(_mtx);
+		_cv.wait(lck, [this] {return _n_thread == 0;});
+	}
+
+}
+
+int graph::checkColoring()
+{
+	int max_color = 0;
 	for (map<int, node>::iterator it = _nodes.begin(); it != _nodes.end(); ++it) {
 		if (colorConflict(it->first))
-			return false;
+			return -1;
+		if (it->second.getColor() > max_color)
+			max_color = it->second.getColor();
 	}
 	
-	return true;
+	return max_color;
 }
 
 void graph::printColoring()
@@ -227,19 +307,28 @@ bool graph::weightConflict(int n)
 	return false;
 }
 
-bool graph::isLocalMaximum(int n)
+int graph::isLocalMaximum(node& n)
 {
-	int cur_weight = _nodes.find(n)->second.getWeight();
-
+	int cur_weight = n.getWeight();
+	int min_color = -1;
 	if (cur_weight == -1)
 		return false;
 
-	vector<int> adj_list = _nodes.find(n)->second.getAdjList();
-	for (vector<int>::iterator it = adj_list.begin(); it != adj_list.end(); ++it)
-		if (_nodes.find(*it)->second.getWeight() >= cur_weight)
-			return false;
-
-	return true;
+	vector<int> adj_list = n.getAdjList();
+	if (adj_list.size() == 0)
+		min_color = 0;
+	for (vector<int>::iterator it = adj_list.begin(); it != adj_list.end(); ++it) {
+		// Check if current adjacent node has bigger weight than original node
+		node adj_node = this->_nodes.find(*it)->second;
+		if (adj_node.getColor() == -1 && adj_node.getWeight() >= cur_weight) {
+			return -1; 
+		}
+		// Check if current adjacent node has bigger color than min color
+		int cur_color = _nodes.find(*it)->second.getColor();
+		if (cur_color >= min_color)
+			min_color = cur_color + 1;
+	}
+	return min_color;
 }
 
 int graph::getMinColor(int n)
@@ -270,15 +359,46 @@ bool graph::colorConflict(int n)
 
 	return false;
 }
-
-void graph::checkAndColorNode(int n, graph* U)
+/*
+void graph::checkAndColorNode(node& n)
 {
-	if (U->isLocalMaximum(n)) {
-		int min_color = this->getMinColor(n);
-		// Use a lock to modify the common data structure
-		unique_lock<mutex> lck(_mtx);
-		this->_nodes.find(n)->second.setColor(min_color);
-		U->removeNode(n);
-		U->_nodes.erase(n);
+	int min_color = this->isLocalMaximum(n);
+	if (min_color != -1) {
+		n.setColor(min_color);
 	}
 }
+*/
+void graph::checkAndColorNode(node& n)
+{
+	int min_color = this->isLocalMaximum(n);
+	if (min_color != -1) {
+		n.setColor(min_color);
+	}
+	//lock_guard<mutex> lck(_mtx);
+	_n_thread--;
+	_cv.notify_all();
+}
+
+void graph::checkAndColorListOfNodes(int from, int to)
+{	// Assign a random weight to each node 
+	bool exit = true;
+	for (int n_id = from; n_id < to; n_id++) {
+		node *current_node = &_nodes.find(n_id)->second;
+		if (current_node->getColor() == -1) {
+			int min_color = this->isLocalMaximum(*current_node);
+			if (min_color != -1) {
+				// Use a lock to modify the common data structure
+				current_node->setColor(min_color);
+				exit = false;
+				//cout << "Colored node" << current_node->getId() << " with color " << min_color << endl;
+			}
+		}
+	}
+	if (!exit)
+		_exit = exit;
+	//lock_guard<mutex> lck(_mtx);
+	_n_thread--;
+	_cv.notify_all();
+}
+
+

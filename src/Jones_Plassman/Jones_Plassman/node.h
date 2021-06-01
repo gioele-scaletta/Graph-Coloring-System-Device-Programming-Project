@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <shared_mutex>
 
 using namespace std;
 
@@ -19,6 +20,8 @@ public:
 	void setWeight(int w);
 	int getWeight();
 	vector<int> getAdjList();
+	shared_mutex* getPointerToMutexColor();
+	int getId();
 
 	bool operator==(const int& id);
 
@@ -27,6 +30,7 @@ private:
 	int _degree;
 	int _color;
 	int _weight;
+	shared_mutex _mtx;
 	vector<int> _adj_nodes;
 };
 

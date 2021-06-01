@@ -1,2 +1,7 @@
-﻿  main.cpp
+﻿  graph.cpp
+c:\users\andri\onedrive\desktop\poli\system and device programming\quer\projects\graph-coloring-sdp-project\src\jones_plassman\jones_plassman\graph.cpp(230): warning C4244: 'inizializzazione': conversione da 'double' a 'int'. Possibile perdita di dati.
+c:\users\andri\onedrive\desktop\poli\system and device programming\quer\projects\graph-coloring-sdp-project\src\jones_plassman\jones_plassman\graph.cpp(230): warning C4244: 'inizializzazione': conversione da 'double' a 'const int'. Possibile perdita di dati.
+c:\users\andri\onedrive\desktop\poli\system and device programming\quer\projects\graph-coloring-sdp-project\src\jones_plassman\jones_plassman\graph.cpp(239): warning C4018: '<': errata corrispondenza tra signed e unsigned
+c:\users\andri\onedrive\desktop\poli\system and device programming\quer\projects\graph-coloring-sdp-project\src\jones_plassman\jones_plassman\graph.cpp(241): warning C4018: '>': errata corrispondenza tra signed e unsigned
+c:\users\andri\onedrive\desktop\poli\system and device programming\quer\projects\graph-coloring-sdp-project\src\jones_plassman\jones_plassman\graph.cpp(251): warning C4018: '<': errata corrispondenza tra signed e unsigned
   Jones_Plassman.vcxproj -> C:\Users\andri\OneDrive\Desktop\Poli\System and Device Programming\Quer\Projects\Graph-Coloring-SDP-Project\src\Jones_Plassman\Debug\Jones_Plassman.exe

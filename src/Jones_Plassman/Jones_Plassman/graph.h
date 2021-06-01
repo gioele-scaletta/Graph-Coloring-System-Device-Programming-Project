@@ -5,7 +5,9 @@
 #include <string>
 #include <map>
 #include <thread>
-#include <mutex>
+#include <shared_mutex>
+#include <atomic>
+
 
 using namespace std;
 
@@ -24,22 +26,25 @@ public:
 	void readFileDIMACS(string fileName);
 	void JonesPlassmanColoring();
 	void JonesPlassmanColoringParallel();
-	bool checkColoring();
+	int checkColoring();
 	void printColoring();
 	void cancelColors();
 	
 private:
 	void assignRandomWeights();
 	bool weightConflict(int n);
-	bool isLocalMaximum(int n);
+	int isLocalMaximum(node& n);
 	int getMinColor(int n);
 	bool colorConflict(int n);
-	void checkAndColorNode(int n, graph* V);
+	void checkAndColorNode(node& n);
+	void checkAndColorListOfNodes(int from, int to);
 
 private:
 	map<int, node> _nodes;
 	vector<edge> _edges;
-	mutex _mtx, _cv_m;
+	mutex _mtx;
 	condition_variable _cv;
+	atomic<int> _n_thread;
+	atomic<bool> _exit;
 };
 
