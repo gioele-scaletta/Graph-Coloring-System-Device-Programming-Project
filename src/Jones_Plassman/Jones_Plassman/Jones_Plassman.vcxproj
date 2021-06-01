@@ -124,6 +124,14 @@
     <ClInclude Include="edge.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="node.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Jones_Plassman.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\benchmark\manual\v100.gra" />
+    <None Include="..\..\..\benchmark\scaleFree\ba10k2d.gra" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

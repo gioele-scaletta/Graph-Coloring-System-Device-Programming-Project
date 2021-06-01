@@ -222,6 +222,13 @@ void graph::JonesPlassmanColoringParallel()
 }
 */
 
+bool graph::isColored(int n, vector<int> &array) {
+	for (int i = 0; i < n; i++) {
+		if (array[i]==0) return false;
+	}
+	return true;
+}
+
 void graph::JonesPlassmanColoringParallel()
 {
 	// Check how many threads can be launched concurrently depending on the hardware setup
@@ -230,32 +237,42 @@ void graph::JonesPlassmanColoringParallel()
 	const int nodes_per_thread = floor(_nodes.size() / maxThreads) + 1;
 	// Assign a random weight to each node 
 	this->assignRandomWeights();
+	vector<int> _exit;
+	
+	int nt;
+	for (int i = 0; i < maxThreads; i++) _exit.push_back(0);
 
-	while (!_exit) {
-		_exit = true;
+	while (!isColored(maxThreads, _exit)) {
+		//_exit = true;
 		vector<thread> threadPool;
 		_n_thread = 0;
+		nt = 0;
 
 		for (int from = 0; from < _nodes.size(); from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _nodes.size())
 				to = _nodes.size();
-			
-			thread t([this, from, to] {checkAndColorListOfNodes(from, to);});
+
+			//if (_exit.at(nt)==1) continue;
+
+			int* tmp = &_exit[nt++];
+			thread t([this, from, to, tmp] {checkAndColorListOfNodes(from, to, tmp); });
+
 			t.detach();
 			{
-				lock_guard<mutex> lck(_mtx);
+				unique_lock<mutex> lck(_mtx);
 				_n_thread++;
+				if (_n_thread == maxThreads) _cv.wait(lck);
 			}
-			unique_lock<mutex> lck(_mtx);
-			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads;});
+		
+			
 		}
-		// Wait for termination of remaining threads
-		unique_lock<std::mutex> lck(_mtx);
-		_cv.wait(lck, [this] {return _n_thread == 0;});
+
 	}
 
 }
+
+
 
 int graph::checkColoring()
 {
@@ -379,7 +396,7 @@ void graph::checkAndColorNode(node& n)
 	_cv.notify_all();
 }
 
-void graph::checkAndColorListOfNodes(int from, int to)
+void graph::checkAndColorListOfNodes(int from, int to, int* colored)
 {	// Assign a random weight to each node 
 	bool exit = true;
 	for (int n_id = from; n_id < to; n_id++) {
@@ -394,9 +411,15 @@ void graph::checkAndColorListOfNodes(int from, int to)
 			}
 		}
 	}
-	if (!exit)
-		_exit = exit;
-	//lock_guard<mutex> lck(_mtx);
+
+	if (exit){
+		*colored = 1;
+	}
+	else {
+		*colored = 0;
+	}
+	
+	lock_guard<mutex> lck(_mtx);
 	_n_thread--;
 	_cv.notify_all();
 }

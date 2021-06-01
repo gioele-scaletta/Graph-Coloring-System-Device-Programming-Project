@@ -38,5 +38,19 @@
     <ClInclude Include="edge.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Jones_Plassman.rc">
+      <Filter>File di risorse</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\benchmark\scaleFree\ba10k2d.gra">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="..\..\..\benchmark\manual\v100.gra" />
   </ItemGroup>
 </Project>

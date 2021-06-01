@@ -26,6 +26,7 @@ public:
 	void readFileDIMACS(string fileName);
 	void JonesPlassmanColoring();
 	void JonesPlassmanColoringParallel();
+	bool isColored(int n, vector<int> &_exit);
 	int checkColoring();
 	void printColoring();
 	void cancelColors();
@@ -37,14 +38,13 @@ private:
 	int getMinColor(int n);
 	bool colorConflict(int n);
 	void checkAndColorNode(node& n);
-	void checkAndColorListOfNodes(int from, int to);
+	void checkAndColorListOfNodes(int from, int to, int* colored);
 
 private:
 	map<int, node> _nodes;
 	vector<edge> _edges;
 	mutex _mtx;
 	condition_variable _cv;
-	atomic<int> _n_thread;
-	atomic<bool> _exit;
+	int _n_thread;
 };
 

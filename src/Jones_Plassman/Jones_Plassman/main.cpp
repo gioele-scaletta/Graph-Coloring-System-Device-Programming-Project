@@ -12,6 +12,9 @@ int main() {
 	int color_parallel, color_normal; 
 
 	myGraph.readFileDIMACS("../../../../benchmark/scaleFree/ba10k5d.gra");
+	//myGraph.readFileDIMACS("../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra");
+	
+	//myGraph.readFileDIMACS("../../../../benchmark/small_dense_real/citeseer_sub_10720.gra");
 	//myGraph.readFileDIMACS("../../../../benchmark/manual/v100.gra");
 
 	start = clock();
@@ -38,7 +41,7 @@ int main() {
 		
 	cout << "Non-parallel coloring took " << time_not_parallel << " sec and used " << color_normal <<" colors" <<endl;
 	cout << "Parallel coloring took " << time_parallel << " sec and used "<< color_parallel << " colors" << endl;
-	cout << "Difference: " << (time_not_parallel - time_parallel) << " sec" << endl;
+	cout << "Time perc par/notpar: " << (time_parallel/time_not_parallel)*100 << "%" << endl;
 
 
 	system("pause");
