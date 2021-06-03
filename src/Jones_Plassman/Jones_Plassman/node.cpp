@@ -40,13 +40,13 @@ int node::getDegree()
 
 int node::getColor()
 {
-	shared_lock<shared_mutex> lock(_mtx);
+	//shared_lock<shared_mutex> lock(_mtx);
 	return _color;
 }
 
 void node::setColor(int color)
 {
-	unique_lock<shared_mutex> lock(_mtx);
+	//unique_lock<shared_mutex> lock(_mtx);
 	_color = color;
 }
 
@@ -86,6 +86,16 @@ shared_mutex * node::getPointerToMutexColor()
 int node::getId()
 {
 	return _id;
+}
+
+void node::ex_lock()
+{
+	_mtx.lock();
+}
+
+void node::unlock()
+{
+	_mtx.unlock();
 }
 
 bool node::operator==(const int& id)

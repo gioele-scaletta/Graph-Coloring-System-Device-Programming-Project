@@ -22,6 +22,8 @@ public:
 	vector<int> getAdjList();
 	shared_mutex* getPointerToMutexColor();
 	int getId();
+	void ex_lock();
+	void unlock();
 
 	bool operator==(const int& id);
 

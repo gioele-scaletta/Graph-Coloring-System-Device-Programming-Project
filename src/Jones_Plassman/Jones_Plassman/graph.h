@@ -7,6 +7,7 @@
 #include <thread>
 #include <shared_mutex>
 #include <atomic>
+#include <queue>
 
 
 using namespace std;
@@ -25,11 +26,17 @@ public:
 	void readFromFile(string fileName);
 	void readFileDIMACS(string fileName);
 	void JonesPlassmanColoring();
-	void JonesPlassmanColoringParallel();
+	void JonesPlassmanColoringParallelQueueCounter();
+	void JonesPlassmanColoringParallelQueueVector();
+	void JonesPlassmanColoringParallelBarriers();
+	void JonesPlassmanColoringParallelOneNodeThread();
+	void JonesPlassmanColoringParallelVector();
 	bool isColored(int n, vector<int> &_exit);
 	int checkColoring();
 	void printColoring();
 	void cancelColors();
+	void infiniteLoopThread();
+	void infiniteLoopThreadVector(int maxThreads);
 	
 private:
 	void assignRandomWeights();
@@ -38,13 +45,23 @@ private:
 	int getMinColor(int n);
 	bool colorConflict(int n);
 	void checkAndColorNode(node& n);
-	void checkAndColorListOfNodes(int from, int to, int* colored);
+	void checkAndColorListOfNodesQueueCounter(int from, int to);
+	void checkAndColorListOfNodesVector(int from, int to, int* colored);
+	void checkAndColorListOfNodesBarrier(int from, int to);
+	
+
 
 private:
 	map<int, node> _nodes;
 	vector<edge> _edges;
-	mutex _mtx;
-	condition_variable _cv;
+	mutex _mtx, _qmtx, _mtx_colored;
+	condition_variable _cv, _cv_colored;
 	int _n_thread;
+	atomic<int> _colored_nodes;
+	queue<function<void()>> _q;
+	bool _terminate_pool;
+	atomic<bool> _barrier;
+	vector<thread> Poolvector;
+	vector<int> _exit_;
 };
 
