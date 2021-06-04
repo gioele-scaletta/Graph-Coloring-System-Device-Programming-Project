@@ -37,6 +37,21 @@ int node::getDegree()
 	return _degree;
 }
 
+int node::getTmpDegree()
+{
+	return _tmp_degree;
+}
+
+void node::decreaseTmpDegree()
+{
+	_tmp_degree--;
+}
+
+void node::resetTmpDegree()
+{
+	_tmp_degree = _degree;
+}
+
 
 int node::getColor()
 {
@@ -71,6 +86,21 @@ void node::setWeight(int w)
 int node::getWeight()
 {
 	return _weight;
+}
+
+void node::increaseWeight()
+{
+	//unique_lock<mutex> lck(_weight_mutex);
+
+	_weight++;
+}
+
+
+void node::decreaseWeight()
+{
+	//unique_lock<mutex> lck(_weight_mutex);
+	_weight--;
+	
 }
 
 vector<int> node::getAdjList()
