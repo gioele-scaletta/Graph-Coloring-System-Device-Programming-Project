@@ -1,7 +1,8 @@
 ﻿  main.cpp
+c:\users\andri\onedrive\desktop\poli\system and device programming\quer\projects\graph-coloring-sdp-project\src\jones_plassman\jones_plassman\main.cpp(13): warning C4101: 'score': variabile locale senza riferimenti
   Generazione codice in corso...
-  4 of 1694 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    3 functions were new in current compilation
+  1 of 1690 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Generazione codice terminata
-  Jones_Plassman.vcxproj -> C:\Users\gioel\Documents\POLI\magistrale\System_and_Device_Programming\Project_repoo\Graph-Coloring-SDP-Project_2\Graph-Coloring-SDP-Project\src\Jones_Plassman\Release\Jones_Plassman.exe
+  Jones_Plassman.vcxproj -> C:\Users\andri\OneDrive\Desktop\Poli\System and Device Programming\Quer\Projects\Graph-Coloring-SDP-Project\src\Jones_Plassman\Release\Jones_Plassman.exe

@@ -9,7 +9,6 @@
 #include <atomic>
 #include <queue>
 
-
 using namespace std;
 
 class graph
@@ -25,26 +24,25 @@ public:
 	int getEdgesNumber();
 	void readFromFile(string fileName);
 	void readFileDIMACS(string fileName);
-	void JonesPlassmanColoring();
+	void JonesPlassmanColoringSequential();
 	void JonesPlassmanColoringParallelQueueCounter();
 	void JonesPlassmanColoringParallelQueueVector();
 	void JonesPlassmanColoringParallelBarriers();
 	void JonesPlassmanColoringParallelOneNodeThread();
 	void JonesPlassmanColoringParallelVector();
-	void JonesPlassmanColoringParallel();
+	void JonesPlassmanColoringParallelStandard();
 	void LargestDegreeFirst();
 	bool isColored(int n, vector<int> &_exit);
 	int checkColoring();
 	void printColoring();
 	void cancelColors();
 	void infiniteLoopThread();
-	void infiniteLoopThread_();
+	void infiniteLoopThreadRescheduleJob();
 	void infiniteLoopThreadVector(int maxThreads);
 	void LargestDegreeFirstStandard();
-	void SmallDegreeFirstStandard();
+	void SmallestDegreeLastStandard();
+	void GreedySequential();
 
-
-	
 private:
 	void assignRandomWeights();
 	bool weightConflict(int n);
@@ -64,9 +62,6 @@ private:
 	void ColorNodesLDF(int from, int to);
 	void CalculateWeightsSDF();
 
-	
-
-
 private:
 	map<int, node> _nodes;
 	vector<edge> _edges;
@@ -77,10 +72,8 @@ private:
 	queue<function<void()>> _q;
 	bool _terminate_pool;
 	atomic<bool> _barrier;
-	vector<thread> Poolvector;
-	vector<int> _exit_;
-	vector<pair<node *,int >> NodesToColor;
-
+	vector<int> _exit;
+	vector<pair<node *,int >> _nodes_to_color;
 
 };
 
