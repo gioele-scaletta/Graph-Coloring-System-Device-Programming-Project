@@ -2,7 +2,7 @@
 
 #include "graph.h"
 #include <iostream>
-
+#include <iomanip>
 
 int main() {
 	
@@ -14,6 +14,8 @@ int main() {
 	string graph_sample, graph_sample_path;
 	double finalscoreJonesPlassmanColoringParallelQueueCounter=0, finalscoreJonesPlassmanColoringParallelQueueVcetor=0, finalscoreJonesPlassmanColoringParallelBarriers=0, finalscoreJonesPlassmanColoringParallelVector=0, finalscoreJonesPlassmanColoringParallelOnenodeThread=0, finalscoreLargestDegreeFirst = 0;
 	double finaltimeJonesPlassmanColoringParallelQueueCounter = 0, finaltimeJonesPlassmanColoringParallelQueueVcetor = 0, finaltimeJonesPlassmanColoringParallelBarriers = 0, finaltimeJonesPlassmanColoringParallelVector = 0, finaltimeJonesPlassmanColoringParallelOnenodeThread = 0, finaltimeLargestDegreeFirst=0;
+
+	int output_width = 40;
 
 	map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10krd", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
 	{"v100.gra", "../../../../benchmark/manual/v100.gra"},
@@ -33,7 +35,7 @@ int main() {
 
 		myGraph.readFileDIMACS(graph_sample_path);
 
-		cout << "Results for graph:" << graph_sample << endl;
+		cout << "Graph: " << graph_sample << endl;
 
 		/*Greedy Sequential*/
 		start = clock();
@@ -41,11 +43,12 @@ int main() {
 		end = clock();
 
 		color_parallel = myGraph.checkColoring();
-
-		cout << "\nGreedy Sequential Coloring:" << endl;
+		
+		cout << endl;
+		cout << setw(output_width) << "Greedy Sequential Coloring: ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Coloring took " << time << " sec and used " << color_parallel << " colors" << endl;
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -59,10 +62,10 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << "\nLargest Degree First standard:" << endl;
+		cout << setw(output_width) << "Largest Degree First standard: ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Coloring took " << time << " sec and used " << color_parallel << " colors" << endl;
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -77,10 +80,10 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << "\nLargest Degree First with overlaps:" << endl;
+		cout << setw(output_width) << "Largest Degree First with overlaps: ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Coloring took " << time << " sec and used " << color_parallel << " colors" << endl;
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -94,10 +97,10 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << "\nSmallest Degree Last:" << endl;
+		cout << setw(output_width) << "Smallest Degree Last: ";
 		if (color_parallel != -1) {
-			time_not_parallel = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Coloring took " << double(end - start) / double(CLOCKS_PER_SEC) << " sec and used " << color_parallel << " colors" << endl;
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -111,10 +114,10 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << "\nJones-Plassman standard:" << endl;
+		cout << setw(output_width) << "Jones-Plassman standard: ";
 		if (color_parallel != -1) {
-			time_not_parallel = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Coloring took " << double(end - start) / double(CLOCKS_PER_SEC) << " sec and used " << color_parallel << " colors" << endl;
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -128,10 +131,10 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << "\nJones-Plassman standard:" << endl;
+		cout << setw(output_width) << "Jones-Plassman standard: ";
 		if (color_parallel != -1) {
-			time_not_parallel = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Coloring took " << double(end - start) / double(CLOCKS_PER_SEC) << " sec and used " << color_parallel << " colors" << endl;
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
