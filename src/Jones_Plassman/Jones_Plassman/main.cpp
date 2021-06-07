@@ -15,12 +15,15 @@ int main() {
 	double finalscoreJonesPlassmanColoringParallelQueueCounter=0, finalscoreJonesPlassmanColoringParallelQueueVcetor=0, finalscoreJonesPlassmanColoringParallelBarriers=0, finalscoreJonesPlassmanColoringParallelVector=0, finalscoreJonesPlassmanColoringParallelOnenodeThread=0, finalscoreLargestDegreeFirst = 0;
 	double finaltimeJonesPlassmanColoringParallelQueueCounter = 0, finaltimeJonesPlassmanColoringParallelQueueVcetor = 0, finaltimeJonesPlassmanColoringParallelBarriers = 0, finaltimeJonesPlassmanColoringParallelVector = 0, finaltimeJonesPlassmanColoringParallelOnenodeThread = 0, finaltimeLargestDegreeFirst=0;
 
-	int output_width = 40;
+	int output_width = 50;
 
-	map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10krd", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
-	{"v100.gra", "../../../../benchmark/manual/v100.gra"},
-	/*{"citeseer.scc.gra", "../../../../../../benchmark/large/citeseer.scc.gra"}*/ //NOT WORKING
+	map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
+	{"v100.gra", "../../../../benchmark/manual/v100.gra"}, {"ba10k2d", "../../../../benchmark/scaleFree/ba10k2d.gra"},  {"agrocyc_dag_uniq.gra" , "../../../../benchmark/sigmod08/agrocyc_dag_uniq.gra"},
+	{"anthra_dag_uniq.gra" , "../../../../benchmark/sigmod08/anthra_dag_uniq.gra"}, {"ecoo_dag_uniq.gra" , "../../../../benchmark/sigmod08/ecoo_dag_uniq.gra"}
+	/*{"citeseer.scc.gra", "../../../../../../benchmark/large/citeseer.scc.gra"} *///NOT WORKING
 	};
+
+	//map<string, string> GRAPHS = { {"citeseer.scc.gra", "../../../../benchmark/large/citeseer.scc.gra"} };
 
 	map<string, string>::iterator it;
 	for (it = GRAPHS.begin(); it != GRAPHS.end(); it++) {
@@ -97,7 +100,7 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << setw(output_width) << "Smallest Degree Last: ";
+		cout << setw(output_width) << "Smallest Degree Last (sequential weighing): ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
@@ -107,14 +110,49 @@ int main() {
 
 		myGraph.cancelColors();
 
-		/*Jones Plassman standard*/
+
+		/*Smallest Degree Last parallel weighing*/
+		start = clock();
+		myGraph.SmallestDegreeLastParallelWeighing();
+		end = clock();
+
+		color_parallel = myGraph.checkColoring();
+
+		cout << setw(output_width) << "Smallest Degree Last (parallel weighing): ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+
+		/*Jones Plassman standard with threadpool*/
 		start = clock();
 		myGraph.JonesPlassmanColoringParallelStandard();
 		end = clock();
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << setw(output_width) << "Jones-Plassman standard: ";
+		cout << setw(output_width) << "Jones-Plassman standard (with threadpool): ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+
+		/*Jones Plassman standard without threadpool*/
+		start = clock();
+		myGraph.JonesPlassmanColoringParallelBarriers();
+		end = clock();
+
+		color_parallel = myGraph.checkColoring();
+
+		cout << setw(output_width) << "Jones-Plassman standard (without threadpool): ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
@@ -131,7 +169,7 @@ int main() {
 
 		color_parallel = myGraph.checkColoring();
 
-		cout << setw(output_width) << "Jones-Plassman standard: ";
+		cout << setw(output_width) << "Jones-Plassman with overlaps: ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
@@ -141,6 +179,25 @@ int main() {
 
 		myGraph.cancelColors();
 
+
+		/*Jones Plassman one node per thread -> COMMENTED OUT BECAUSE IT'S QUITE SLOW!*/
+		/* 
+		start = clock();
+		myGraph.JonesPlassmanColoringParallelOneNodeThread();
+		end = clock();
+
+		color_parallel = myGraph.checkColoring();
+
+		cout << setw(output_width) << "Jones-Plassman (one node per thread): ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+		*/
 	}
 
 	system("pause");

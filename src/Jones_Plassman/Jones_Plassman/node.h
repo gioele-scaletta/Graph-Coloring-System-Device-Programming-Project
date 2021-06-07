@@ -38,8 +38,7 @@ private:
 	int _tmp_degree;
 	int _color;
 	int _weight;
-	shared_mutex _mtx;
-	mutex _weight_mutex;
+	shared_mutex _color_mtx, _weight_mtx, _tmp_degree_mtx;
 	vector<int> _adj_nodes;
 };
 

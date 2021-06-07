@@ -39,11 +39,13 @@ int node::getDegree()
 
 int node::getTmpDegree()
 {
+	//shared_lock<shared_mutex> lck(_tmp_degree_mtx);
 	return _tmp_degree;
 }
 
 void node::decreaseTmpDegree()
 {
+	//unique_lock<shared_mutex> lck(_tmp_degree_mtx);
 	_tmp_degree--;
 }
 
@@ -55,13 +57,13 @@ void node::resetTmpDegree()
 
 int node::getColor()
 {
-	//shared_lock<shared_mutex> lock(_mtx);
+	//shared_lock<shared_mutex> lock(_color_mtx);
 	return _color;
 }
 
 void node::setColor(int color)
 {
-	//unique_lock<shared_mutex> lock(_mtx);
+	//unique_lock<shared_mutex> lock(_color_mtx);
 	_color = color;
 }
 
@@ -80,25 +82,26 @@ void node::removeAdjNode(int n)
 
 void node::setWeight(int w)
 {
+	//unique_lock<shared_mutex> lck(_weight_mtx);
 	_weight = w;
 }
 
 int node::getWeight()
 {
+	//shared_lock<shared_mutex> lck(_color_mtx);
 	return _weight;
 }
 
 void node::increaseWeight()
 {
-	//unique_lock<mutex> lck(_weight_mutex);
-
+	//unique_lock<shared_mutex> lck(_weight_mtx);
 	_weight++;
 }
 
 
 void node::decreaseWeight()
 {
-	//unique_lock<mutex> lck(_weight_mutex);
+	//unique_lock<shared_mutex> lck(_weight_mtx);
 	_weight--;
 	
 }
@@ -110,7 +113,7 @@ vector<int> node::getAdjList()
 
 shared_mutex * node::getPointerToMutexColor()
 {
-	return &_mtx;
+	return &_color_mtx;
 }
 
 int node::getId()
@@ -120,12 +123,12 @@ int node::getId()
 
 void node::ex_lock()
 {
-	_mtx.lock();
+	_color_mtx.lock();
 }
 
 void node::unlock()
 {
-	_mtx.unlock();
+	_color_mtx.unlock();
 }
 
 bool node::operator==(const int& id)
