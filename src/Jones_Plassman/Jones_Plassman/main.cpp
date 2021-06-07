@@ -93,6 +93,23 @@ int main() {
 
 		myGraph.cancelColors();
 
+		/*Smallest Degree Last sequential*/
+		start = clock();
+		myGraph.SmallestDegreeLastSequential();
+		end = clock();
+
+		color_parallel = myGraph.checkColoring();
+
+		cout << setw(output_width) << "Smallest Degree Last (sequential): ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+
 		/*Smallest Degree Last*/
 		start = clock();
 		myGraph.SmallestDegreeLastStandard();

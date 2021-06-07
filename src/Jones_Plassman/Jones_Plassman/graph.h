@@ -80,8 +80,11 @@ public:
 	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
 	 * which are synchronized after each iteration
 	 */
-
 	void LargestDegreeFirstStandard();
+	/*
+	 * Sequential implementation of the Smallest Degree Last algorithm
+	 */
+	void SmallestDegreeLastSequential();
 	/*
 	 * Standard implementation of the Smallest Degree Last algorithm where different iterations
 	 * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
@@ -101,8 +104,8 @@ public:
 
 private:
 	void assignRandomWeights();
-	void CalculateWeightsSDFParallel();
-	bool weighNodes(int from, int to);
+	void CalculateWeightsSDLParallel();
+	void weighNodes(int from, int to);
 	void findNodesToWeigh(int from, int to);
 	bool weightConflict(int n);
 	int isLocalMaximum(node& n);
@@ -119,7 +122,7 @@ private:
 	void checkAndColorListOfNodesLargestDegreeFirst(int from, int to);
 	void assignDegreeWeights();
 	void ColorNodesLDF(int from, int to);
-	void CalculateWeightsSDF();
+	void CalculateWeightsSDL();
 
 private:
 	map<int, node> _nodes;

@@ -434,6 +434,29 @@ void graph::LargestDegreeFirstStandard()
 }
 
 
+/*
+ * Sequential implementation of the Smallest Degree Last algorithm 
+ */
+void graph::SmallestDegreeLastSequential() 
+{
+	this->CalculateWeightsSDL();
+	int colored_nodes = 0;
+	int min_color;
+
+	while (colored_nodes != _nodes.size()) {
+		for (map<int, node>::iterator it = _nodes.begin(); it != _nodes.end(); ++it) {
+			if (it->second.getColor() == -1) {
+				min_color = isLocalMaximum(it->second);
+				if (min_color != -1) {
+					it->second.setColor(min_color);
+					colored_nodes++;
+				}
+			}
+		}
+	}
+}
+
+
 
 /*
  * Standard implementation of the Smallest Degree Last algorithm where different iterations
@@ -448,7 +471,7 @@ void graph::SmallestDegreeLastParallelWeighing()
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
 	const int nodes_per_thread = floor(_nodes.size() / maxThreads) + 1;
 
-	this->CalculateWeightsSDFParallel();
+	this->CalculateWeightsSDLParallel();
 	vector<thread> Pool;
 
 	_terminate_pool = false;
@@ -530,7 +553,7 @@ void graph::SmallestDegreeLastStandard()
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
 	const int nodes_per_thread = floor(_nodes.size() / maxThreads) + 1;
 
-	this->CalculateWeightsSDF();
+	this->CalculateWeightsSDL();
 	vector<thread> Pool;
 
 	_terminate_pool = false;
@@ -1118,7 +1141,7 @@ void graph::assignDegreeWeights()
 }
 
 
-void graph::CalculateWeightsSDF()
+void graph::CalculateWeightsSDL()
 {
 	int max_degree = _nodes.size();
 	int i=1, k=1;
@@ -1142,9 +1165,11 @@ void graph::CalculateWeightsSDF()
 			tmp->setWeight(i);
 			while (weightConflict(tmp->getId()))
 				tmp->setWeight(rand() % (tmp->getDegree() * 2));
+			/* // Decrease weights of neighboring nodes (WORKS MUCH BETTER WITHOUT THIS!)
 			for (int t : tmp->getAdjList())
 				if(_nodes.find(t)->second.getWeight() == -1)
 					_nodes.find(t)->second.decreaseTmpDegree();
+			*/
 		}
 		i++;
 	}
@@ -1153,7 +1178,7 @@ void graph::CalculateWeightsSDF()
 
 
 
-void graph::CalculateWeightsSDFParallel()
+void graph::CalculateWeightsSDLParallel()
 {
 	int max_degree = _nodes.size();
 	queue<node*> toWeigh;
@@ -1237,7 +1262,7 @@ void graph::CalculateWeightsSDFParallel()
 }
 
 
-bool graph::weighNodes(int from, int to) {
+void graph::weighNodes(int from, int to) {
 
 	for (int n_id = from; n_id < to; n_id++) {
 		node* current_node = _to_weigh[n_id];
@@ -1245,7 +1270,8 @@ bool graph::weighNodes(int from, int to) {
 		current_node->setWeight(_i);
 		while (weightConflict(current_node->getId()))
 			current_node->setWeight(rand() % (current_node->getDegree() * 2));
-		// Decrease degree of neighboring nodes
+		// Decrease degree of neighboring nodes 
+		// WITHOUT THIS: much better solutions, much more time!
 		for (int t : current_node->getAdjList())
 			if (_nodes.find(t)->second.getWeight() == -1)
 				_nodes.find(t)->second.decreaseTmpDegree();
