@@ -24,6 +24,7 @@ public:
 	int getEdgesNumber();
 	void readFromFile(string fileName);
 	void readFileDIMACS(string fileName);
+	void readFileDIMACSCSR(string fileName);
 	/*
 	 * Sequential version of Jones-Plassman algorithm
 	 */
@@ -70,6 +71,7 @@ public:
 	void LargestDegreeFirst();
 	bool isColored(int n, vector<int> &_exit);
 	int checkColoring();
+	int checkColoringCSR();
 	void printColoring();
 	void cancelColors();
 	void infiniteLoopThread();
@@ -108,9 +110,11 @@ private:
 	void weighNodes(int from, int to);
 	void findNodesToWeigh(int from, int to);
 	bool weightConflict(int n);
-	int isLocalMaximum(node& n);
+	int isLocalMaximum(int n);
 	int getMinColor(int n);
+	int getMinColorCSR(int n);
 	bool colorConflict(int n);
+	bool colorConflictCSR(int n);
 	void checkAndColorNode(node& n);
 	void checkAndColorListOfNodesQueueCounter(int from, int to);
 	void checkAndColorListOfNodesVectorSum(int from, int to, int* colored);
@@ -130,13 +134,23 @@ private:
 	mutex _mtx, _qmtx, _mtx_colored, mutex_node_to_color, _mtx_weighted;
 	condition_variable _cv, _cv_colored;
 	int _n_thread, _k, _i;
-	atomic<int> _colored_nodes, _weighted_nodes;
+	int _colored_nodes, _weighted_nodes;
 	queue<function<void()>> _q;
 	bool _terminate_pool;
-	atomic<bool> _barrier;
+	bool _barrier;
 	vector<int> _exit;
-	vector<pair<node *,int >> _nodes_to_color;
-	vector<node*> _to_weigh;
+	vector<pair<int,int >> _nodes_to_color;
+	vector<int> _to_weigh;
 
+	shared_mutex _mtx_weights;
+	deque<shared_mutex> _mtx_colors; // not vector because mutexes cannot be copied 
+
+	/* Compressed Sparse Row (CSR) representation of the graph */
+	//vector<int> _offsets, _edgesCSR;
+	vector<int> _colors, _weights, _tmp_degree;
+	int _n_nodes;
+
+	/* Variation of CSR: one single array containing adjacencies for each node */
+	vector<vector<int>> _edgesCSR;
 };
 

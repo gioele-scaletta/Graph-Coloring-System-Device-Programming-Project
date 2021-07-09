@@ -17,13 +17,13 @@ int main() {
 
 	int output_width = 50;
 
-	map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
+	/*map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
 	{"v100.gra", "../../../../benchmark/manual/v100.gra"}, {"ba10k2d", "../../../../benchmark/scaleFree/ba10k2d.gra"},  {"agrocyc_dag_uniq.gra" , "../../../../benchmark/sigmod08/agrocyc_dag_uniq.gra"},
 	{"anthra_dag_uniq.gra" , "../../../../benchmark/sigmod08/anthra_dag_uniq.gra"}, {"ecoo_dag_uniq.gra" , "../../../../benchmark/sigmod08/ecoo_dag_uniq.gra"}
-	/*{"citeseer.scc.gra", "../../../../../../benchmark/large/citeseer.scc.gra"} *///NOT WORKING
+	,{"citeseer.scc.gra", "../../../../benchmark/large/citeseer.scc.gra"}
 	};
-
-	//map<string, string> GRAPHS = { {"citeseer.scc.gra", "../../../../benchmark/large/citeseer.scc.gra"} };
+	*/
+	map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"} };
 
 	map<string, string>::iterator it;
 	for (it = GRAPHS.begin(); it != GRAPHS.end(); it++) {
@@ -36,7 +36,7 @@ int main() {
 		cout << "-------------------------------------------------" << endl;
 		cout << "Loading " << graph_sample << endl;
 
-		myGraph.readFileDIMACS(graph_sample_path);
+		myGraph.readFileDIMACSCSR(graph_sample_path);
 
 		cout << "Graph: " << graph_sample << endl;
 
@@ -45,7 +45,7 @@ int main() {
 		myGraph.GreedySequential();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 		
 		cout << endl;
 		cout << setw(output_width) << "Greedy Sequential Coloring: ";
@@ -58,12 +58,13 @@ int main() {
 
 		myGraph.cancelColors();
 
+
 		/*Largest Degree First Standard*/
 		start = clock();
 		myGraph.LargestDegreeFirstStandard();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Largest Degree First standard: ";
 		if (color_parallel != -1) {
@@ -76,12 +77,12 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Largest Degree First with overlaps*/
-
-		start = clock();
+		/* TODO: the function does not work (deadlocks can happen, data structures are not properly locked) */
+		/*start = clock();
 		myGraph.LargestDegreeFirst();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Largest Degree First with overlaps: ";
 		if (color_parallel != -1) {
@@ -98,7 +99,7 @@ int main() {
 		myGraph.SmallestDegreeLastSequential();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Smallest Degree Last (sequential): ";
 		if (color_parallel != -1) {
@@ -115,7 +116,7 @@ int main() {
 		myGraph.SmallestDegreeLastStandard();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Smallest Degree Last (sequential weighing): ";
 		if (color_parallel != -1) {
@@ -129,11 +130,12 @@ int main() {
 
 
 		/*Smallest Degree Last parallel weighing*/
+		/* TODO: does not work with the big graph (22m nodes) */
 		start = clock();
 		myGraph.SmallestDegreeLastParallelWeighing();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Smallest Degree Last (parallel weighing): ";
 		if (color_parallel != -1) {
@@ -150,7 +152,7 @@ int main() {
 		myGraph.JonesPlassmanColoringParallelStandard();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Jones-Plassman standard (with threadpool): ";
 		if (color_parallel != -1) {
@@ -163,7 +165,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman standard without threadpool*/
-		start = clock();
+		/*start = clock();
 		myGraph.JonesPlassmanColoringParallelBarriers();
 		end = clock();
 
@@ -180,7 +182,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman with overlaps*/
-		start = clock();
+		/*start = clock();
 		myGraph.JonesPlassmanColoringParallelQueueCounter();
 		end = clock();
 
