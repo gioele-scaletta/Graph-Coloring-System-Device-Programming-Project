@@ -10,6 +10,7 @@
 #include <functional>
 #include <random>
 #include <numeric>
+#include <vector>
 
 using namespace std;
 
@@ -337,7 +338,8 @@ void graph::JonesPlassmanColoringParallelStandard()
 	while (!this->_q.empty()) _q.pop();
 	// Check how many threads can be launched concurrently depending on the hardware setup
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
+	const int coef = 1; // coefficient to calculate nodes per thread
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
 	// Assign a random weight to each node 
 	this->assignRandomWeights();
 
@@ -377,7 +379,7 @@ void graph::JonesPlassmanColoringParallelStandard()
 		nodes_to_color = _nodes_to_color.size();
 		_colored_nodes=0;
 
-		nodes_to_color_per_thread = ceil(nodes_to_color / maxThreads)+1;
+		nodes_to_color_per_thread = ceil(nodes_to_color / (maxThreads * coef))+1;
 
 		for (int from = 0; from < nodes_to_color; from += nodes_to_color_per_thread) {
 			int to = from + nodes_to_color_per_thread;
@@ -506,15 +508,13 @@ void graph::SmallestDegreeLastSequential()
 	this->CalculateWeightsSDL();
 	int colored_nodes = 0;
 	int min_color;
-	
-	//cout << "Nodes have been weighted" << endl;
 
 	while (colored_nodes != _n_nodes) {
 		for (int n = 0; n < _n_nodes; n++) {
 			if (_colors[n] == -1) {
 				min_color = isLocalMaximum(n);
 				if (min_color != -1) {
-					_colors[n] = min_color;
+					_colors[n] = getMinColorCSR(n, min_color);
 					colored_nodes++;
 				}
 			}
@@ -538,7 +538,6 @@ void graph::SmallestDegreeLastParallelWeighing()
 	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
 
 	this->CalculateWeightsSDLParallel();
-	cout << "Nodes are weighted" << endl;
 	// Solve conflicts
 	for (int i = 0; i < _n_nodes; i++)
 		while (weightConflict(i))
@@ -622,7 +621,8 @@ void graph::SmallestDegreeLastStandard()
 
 	// Check how many threads can be launched concurrently depending on the hardware setup
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int nodes_per_thread = ceil(_n_nodes / maxThreads) + 1;
+	const int coef = 1; // coefficient to calculate nodes per thread
+	const int nodes_per_thread = ceil(_n_nodes / (maxThreads * coef)) + 1;
 
 	this->CalculateWeightsSDL();
 	vector<thread> Pool;
@@ -658,7 +658,7 @@ void graph::SmallestDegreeLastStandard()
 
 		nodes_to_color = _nodes_to_color.size();
 		_colored_nodes = 0;
-		nodes_to_color_per_thread = ceil(nodes_to_color / maxThreads) + 1;
+		nodes_to_color_per_thread = ceil(nodes_to_color / (maxThreads * coef)) + 1;
 
 		for (int from = 0; from < nodes_to_color; from += nodes_to_color_per_thread) {
 			int to = from + nodes_to_color_per_thread;
@@ -704,7 +704,7 @@ void graph::GreedySequential()
 	// Iterate over nodes and assign the minimum available color
 	for (auto i : indices)
 	{
-		int color = this->getMinColorCSR(i);
+		int color = this->getMinColorCSR(i, -1);
 		this->_colors[i] = color;
 	}
 }
@@ -783,21 +783,24 @@ void graph::JonesPlassmanColoringParallelBarriers()
 {
 	// Check how many threads can be launched concurrently depending on the hardware setup
 	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
+	const int coef = 1; // coefficient to evaluate nodes per thread (so far, best tested is 1)
+	const int nodes_per_thread = ceil(_n_nodes / (coef * maxThreads)) + 1;
+	int colored_nodes = 0;
 	// Assign a random weight to each node 
 	this->assignRandomWeights();
+	_n_thread = 0;
 
-	while (!_barrier) {
-		_barrier = true;
-		vector<thread> threadPool;
-		_n_thread = 0;
+	while (colored_nodes != _n_nodes) {
 
+		_nodes_to_color.clear();
+
+		// FIRST LOOP: find nodes to color and place them in a vector
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
 
-			thread t([this, from, to] {checkAndColorListOfNodesBarrier(from, to); });
+			thread t([this, from, to] {findNodesToColorSingleThread(from, to); });
 			t.detach();
 			{
 				lock_guard<mutex> lck(_mtx);
@@ -806,9 +809,35 @@ void graph::JonesPlassmanColoringParallelBarriers()
 			unique_lock<mutex> lck(_mtx);
 			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads; });
 		}
-		// Wait for termination of remaining threads
-		unique_lock<std::mutex> lck(_mtx);
-		_cv.wait(lck, [this] {return _n_thread == 0; });
+		{
+			// Wait for termination of remaining threads
+			unique_lock<mutex> lck(_mtx);
+			_cv.wait(lck, [this] {return _n_thread == 0; });
+		}			
+
+		// SECOND LOOP: color nodes in the vector
+		int n_nodes_to_color = _nodes_to_color.size();
+		int nodes_to_color_per_thread = ceil(n_nodes_to_color / (coef * maxThreads)) + 1;
+		for (int from = 0; from < n_nodes_to_color; from += nodes_to_color_per_thread) {
+			int to = from + nodes_to_color_per_thread;
+			if (to > n_nodes_to_color)
+				to = n_nodes_to_color;
+
+			thread t([this, from, to] {ColorNodesSingleThread(from, to); });
+			t.detach();
+			{
+				lock_guard<mutex> lck(_mtx);
+				_n_thread++;
+			}
+			unique_lock<mutex> lck(_mtx);
+			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads; });
+		}
+		{
+			// Wait for termination of remaining threads
+			unique_lock<mutex> lck(_mtx);
+			_cv.wait(lck, [this] {return _n_thread == 0; });
+		}
+		colored_nodes += n_nodes_to_color;
 	}
 
 }
@@ -1091,7 +1120,7 @@ void graph::findNodesToColor(int from, int to)
 			if (min_color != -1) {
 				{
 					unique_lock<mutex> lck(mutex_node_to_color);
-					_nodes_to_color.push_back(pair<int, int>(n_id, min_color));
+					_nodes_to_color.push_back(pair<int, int>(n_id, getMinColorCSR(n_id, min_color)));
 				}
 			}
 		}
@@ -1102,6 +1131,39 @@ void graph::findNodesToColor(int from, int to)
 		}
 	}
 }
+
+
+void graph::findNodesToColorSingleThread(int from, int to)
+{
+	for (int n_id = from; n_id < to; n_id++) {
+
+		if (_colors[n_id] == -1) {
+			int min_color = this->isLocalMaximum(n_id);
+			if (min_color != -1) {
+				{
+					unique_lock<mutex> lck(mutex_node_to_color);
+					_nodes_to_color.push_back(pair<int, int>(n_id, getMinColorCSR(n_id, min_color)));
+				}
+			}
+		}
+	}
+	lock_guard<mutex> lck(_mtx);
+	_n_thread--;
+	_cv.notify_all();
+}
+
+
+void graph::ColorNodesSingleThread(int from, int to)
+{
+	for (int n_id = from; n_id < to; n_id++) {
+		_colors[_nodes_to_color[n_id].first] = _nodes_to_color[n_id].second;
+	}
+	lock_guard<mutex> lck(_mtx);
+	_n_thread--;
+	_cv.notify_all();
+}
+
+
 
 void graph::ColorNodes(int from, int to)
 {
@@ -1348,15 +1410,15 @@ void graph::weighNodes(int from, int to) {
 
 	for (int n_id = from; n_id < to; n_id++) {
 		int n = _to_weigh[n_id];
-		// Assign a weight avoiding conflicts
+		// Assign weight
 		_weights[n] = _i;
 		// Solve all conflicts at the end
-		//while (weightConflict(n))
-		//	_weights[n] = rand() % (2 * _weights[n]) + 1;
-		// Decrease degree of neighboring nodes 
-		for (int adj_node : _edgesCSR[n])
-			if (_weights[adj_node] == -1)
-				_tmp_degree[adj_node]--;
+		{
+			unique_lock<shared_mutex> lck(_mtx_weights);
+			for (int adj_node : _edgesCSR[n])
+				if (_weights[adj_node] == -1)
+					_tmp_degree[adj_node]--;
+		}
 		{
 			lock_guard<mutex> lck(_mtx_weighted);
 			_colored_nodes++;
@@ -1440,17 +1502,38 @@ int graph::getMinColor(int n)
 }
 
 
-int graph::getMinColorCSR(int n)
+int graph::getMinColorCSR(int n, int min_color)
 {
-	int min_color = 0;
+	/* TWO OPTIONS:
+	 * 1. Get min color as a parameter and use it to allocate vector
+	 * 2. Perform two iterations on neighboring nodes: the first one finds the highest color used,
+	 * the second one looks for the minimum available color using a vector that has as many cells
+	 * as the number of used colors
+	 */
 
-	// Iterate over all neighboring nodes to find minimum color
-	for (auto i: _edgesCSR[n]) {
-		if (_colors[i] >= min_color)
-			min_color = _colors[i] + 1;
+	int i = 0;
+
+	if (min_color == -1) {
+		// Iterate over all neighboring nodes to find minimum color
+		for (auto adj_node : _edgesCSR[n]) {
+			if (_colors[adj_node] >= min_color)
+				min_color = _colors[adj_node] + 1;
+		}
 	}
 
-	return min_color;
+	if (min_color == -1 || min_color == 0)
+		return 0;
+
+	vector<int> used_colors(min_color, 0);
+	for (auto adj_node : _edgesCSR[n]) {
+		if (_colors[adj_node] != -1)
+			used_colors[_colors[adj_node]] = 1;
+	}
+	for (i = 0; i < used_colors.size(); i++)
+		if (used_colors[i] == 0)
+			return i;
+
+	return i;
 }
 
 bool graph::colorConflict(int n)

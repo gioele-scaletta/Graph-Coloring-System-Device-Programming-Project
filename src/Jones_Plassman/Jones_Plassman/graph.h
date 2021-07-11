@@ -112,7 +112,7 @@ private:
 	bool weightConflict(int n);
 	int isLocalMaximum(int n);
 	int getMinColor(int n);
-	int getMinColorCSR(int n);
+	int getMinColorCSR(int n, int min_color);
 	bool colorConflict(int n);
 	bool colorConflictCSR(int n);
 	void checkAndColorNode(node& n);
@@ -122,7 +122,9 @@ private:
 	void checkAndColorListOfNodesVector(int from, int to, int* colored);
 	void checkAndColorListOfNodesBarrier(int from, int to);
 	void findNodesToColor(int from, int to);
-	void ColorNodes(int from,int  to);
+	void findNodesToColorSingleThread(int from, int to);
+	void ColorNodes(int from, int to);
+	void ColorNodesSingleThread(int from, int to);
 	void checkAndColorListOfNodesLargestDegreeFirst(int from, int to);
 	void assignDegreeWeights();
 	void ColorNodesLDF(int from, int to);

@@ -17,13 +17,13 @@ int main() {
 
 	int output_width = 50;
 
-	/*map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
+	map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
 	{"v100.gra", "../../../../benchmark/manual/v100.gra"}, {"ba10k2d", "../../../../benchmark/scaleFree/ba10k2d.gra"},  {"agrocyc_dag_uniq.gra" , "../../../../benchmark/sigmod08/agrocyc_dag_uniq.gra"},
 	{"anthra_dag_uniq.gra" , "../../../../benchmark/sigmod08/anthra_dag_uniq.gra"}, {"ecoo_dag_uniq.gra" , "../../../../benchmark/sigmod08/ecoo_dag_uniq.gra"}
 	,{"citeseer.scc.gra", "../../../../benchmark/large/citeseer.scc.gra"}
 	};
-	*/
-	map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"} };
+	
+	//map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"} };
 
 	map<string, string>::iterator it;
 	for (it = GRAPHS.begin(); it != GRAPHS.end(); it++) {
@@ -130,7 +130,6 @@ int main() {
 
 
 		/*Smallest Degree Last parallel weighing*/
-		/* TODO: does not work with the big graph (22m nodes) */
 		start = clock();
 		myGraph.SmallestDegreeLastParallelWeighing();
 		end = clock();
@@ -165,11 +164,11 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman standard without threadpool*/
-		/*start = clock();
+		start = clock();
 		myGraph.JonesPlassmanColoringParallelBarriers();
 		end = clock();
 
-		color_parallel = myGraph.checkColoring();
+		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Jones-Plassman standard (without threadpool): ";
 		if (color_parallel != -1) {
