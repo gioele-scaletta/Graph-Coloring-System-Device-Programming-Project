@@ -65,6 +65,13 @@ public:
 	 */
 	void JonesPlassmanColoringParallelStandard();
 	/*
+	 * Implementation of the Jones Plassman algorithm. No overlap between different iterations.
+	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
+	 * which are synchronized after each iteration. The same job finds the nodes to color, it
+	 * places them in a local queue and it colors them after all nodes have been found
+	 */
+	void JonesPlassmanColoringParallelFindAndColor();
+	/*
 	 * LDF implementation where different iterations may overlap and jobs are
 	 * scheduled by the threads after executing them
 	 */
@@ -83,6 +90,13 @@ public:
 	 * which are synchronized after each iteration
 	 */
 	void LargestDegreeFirstStandard();
+	/*
+	 * Implementation of the LDF algorithm. No overlap between different iterations.
+	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
+	 * which are synchronized after each iteration. The same job finds the nodes to color, it
+	 * places them in a local queue and it colors them after all nodes have been found
+	 */
+	void LargestDegreeFirstFindAndColor();
 	/*
 	 * Sequential implementation of the Smallest Degree Last algorithm
 	 */
@@ -129,13 +143,14 @@ private:
 	void assignDegreeWeights();
 	void ColorNodesLDF(int from, int to);
 	void CalculateWeightsSDL();
+	void findAndColorNodes(int from, int to);
 
 private:
 	map<int, node> _nodes;
 	vector<edge> _edges;
 	mutex _mtx, _qmtx, _mtx_colored, mutex_node_to_color, _mtx_weighted;
 	condition_variable _cv, _cv_colored;
-	int _n_thread, _k, _i;
+	int _n_thread, _k, _i, _N_THREADS;
 	int _colored_nodes, _weighted_nodes;
 	queue<function<void()>> _q;
 	bool _terminate_pool;
@@ -149,8 +164,9 @@ private:
 
 	/* Compressed Sparse Row (CSR) representation of the graph */
 	//vector<int> _offsets, _edgesCSR;
-	vector<int> _colors, _weights, _tmp_degree;
+	vector<int> _colors, _weights, _tmp_degree, _new_colors, _new_weights;
 	int _n_nodes;
+	bool _all_nodes_colored, _all_nodes_weighted;
 
 	/* Variation of CSR: one single array containing adjacencies for each node */
 	vector<vector<int>> _edgesCSR;

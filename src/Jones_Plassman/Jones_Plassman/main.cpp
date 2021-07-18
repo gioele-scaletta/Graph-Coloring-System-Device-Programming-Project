@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 
+
 int main() {
 	
 	clock_t start, end;
@@ -23,7 +24,14 @@ int main() {
 	,{"citeseer.scc.gra", "../../../../benchmark/large/citeseer.scc.gra"}
 	};
 	
+	/*map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"},
+	{"uniprotenc_100m", "../../../../benchmark/large/uniprotenc_100m.scc.gra"}};*/
 	//map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"} };
+
+	// This does not work :( -> or maybe it works but it takes very very long
+	// map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
+
+	//map<string, string> GRAPHS = { {"go_uniprot", "../../../../benchmark/large/go_uniprot.gra"} };
 
 	map<string, string>::iterator it;
 	for (it = GRAPHS.begin(); it != GRAPHS.end(); it++) {
@@ -60,13 +68,30 @@ int main() {
 
 
 		/*Largest Degree First Standard*/
-		start = clock();
+		/*start = clock();
 		myGraph.LargestDegreeFirstStandard();
 		end = clock();
 
 		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Largest Degree First standard: ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+
+		/*Largest Degree First with one function to find and color nodes*/
+		/*start = clock();
+		myGraph.LargestDegreeFirstFindAndColor();
+		end = clock();
+
+		color_parallel = myGraph.checkColoringCSR();
+
+		cout << setw(output_width) << "Largest Degree First (find and color): ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
@@ -95,7 +120,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Smallest Degree Last sequential*/
-		start = clock();
+		/*start = clock();
 		myGraph.SmallestDegreeLastSequential();
 		end = clock();
 
@@ -112,7 +137,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Smallest Degree Last*/
-		start = clock();
+		/*start = clock();
 		myGraph.SmallestDegreeLastStandard();
 		end = clock();
 
@@ -130,13 +155,30 @@ int main() {
 
 
 		/*Smallest Degree Last parallel weighing*/
-		start = clock();
+		/*start = clock();
 		myGraph.SmallestDegreeLastParallelWeighing();
 		end = clock();
 
 		color_parallel = myGraph.checkColoringCSR();
 
 		cout << setw(output_width) << "Smallest Degree Last (parallel weighing): ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+
+		/*Jones Plassman sequential*/
+		start = clock();
+		myGraph.JonesPlassmanColoringSequential();
+		end = clock();
+
+		color_parallel = myGraph.checkColoringCSR();
+
+		cout << setw(output_width) << "Jones-Plassman (sequential): ";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
@@ -179,6 +221,24 @@ int main() {
 			cout << "Coloring is wrong!" << endl;
 
 		myGraph.cancelColors();
+
+		/*Jones Plassman with threadpool and find and color in the same function*/
+		start = clock();
+		myGraph.JonesPlassmanColoringParallelFindAndColor();
+		end = clock();
+
+		color_parallel = myGraph.checkColoringCSR();
+
+		cout << setw(output_width) << "Jones-Plassman standard (find and color): ";
+		if (color_parallel != -1) {
+			time = double(end - start) / double(CLOCKS_PER_SEC);
+			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+		}
+		else
+			cout << "Coloring is wrong!" << endl;
+
+		myGraph.cancelColors();
+
 
 		/*Jones Plassman with overlaps*/
 		/*start = clock();

@@ -1,0 +1,109 @@
+-------------------------------------------------
+Loading agrocyc_dag_uniq.gra
+Number of nodes: 12684
+Graph: agrocyc_dag_uniq.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0.001     Colors: 5
+                   Largest Degree First standard: Time (sec): 0.045     Colors: 4
+               Smallest Degree Last (sequential): Time (sec): 0.004     Colors: 5
+      Smallest Degree Last (sequential weighing): Time (sec): 0.028     Colors: 5
+        Smallest Degree Last (parallel weighing): Time (sec): 0.134     Colors: 5
+       Jones-Plassman standard (with threadpool): Time (sec): 0.03      Colors: 6
+    Jones-Plassman standard (without threadpool): Time (sec): 0.109     Colors: 5
+-------------------------------------------------
+Loading anthra_dag_uniq.gra
+Number of nodes: 12499
+Graph: anthra_dag_uniq.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0.001     Colors: 5
+                   Largest Degree First standard: Time (sec): 0.021     Colors: 4
+               Smallest Degree Last (sequential): Time (sec): 0.004     Colors: 4
+      Smallest Degree Last (sequential weighing): Time (sec): 0.018     Colors: 4
+        Smallest Degree Last (parallel weighing): Time (sec): 0.104     Colors: 4
+       Jones-Plassman standard (with threadpool): Time (sec): 0.025     Colors: 5
+    Jones-Plassman standard (without threadpool): Time (sec): 0.108     Colors: 5
+-------------------------------------------------
+Loading ba10k2d
+Number of nodes: 10000
+Graph: ba10k2d
+
+                      Greedy Sequential Coloring: Time (sec): 0.001     Colors: 8
+                   Largest Degree First standard: Time (sec): 0.047     Colors: 5
+               Smallest Degree Last (sequential): Time (sec): 0.006     Colors: 3
+      Smallest Degree Last (sequential weighing): Time (sec): 0.021     Colors: 3
+        Smallest Degree Last (parallel weighing): Time (sec): 0.086     Colors: 3
+       Jones-Plassman standard (with threadpool): Time (sec): 0.038     Colors: 8
+    Jones-Plassman standard (without threadpool): Time (sec): 0.176     Colors: 8
+-------------------------------------------------
+Loading ba10k5d
+Number of nodes: 10000
+Graph: ba10k5d
+
+                      Greedy Sequential Coloring: Time (sec): 0.002     Colors: 13
+                   Largest Degree First standard: Time (sec): 0.134     Colors: 7
+               Smallest Degree Last (sequential): Time (sec): 0.016     Colors: 8
+      Smallest Degree Last (sequential weighing): Time (sec): 0.042     Colors: 8
+        Smallest Degree Last (parallel weighing): Time (sec): 0.181     Colors: 6
+       Jones-Plassman standard (with threadpool): Time (sec): 0.104     Colors: 12
+    Jones-Plassman standard (without threadpool): Time (sec): 0.414     Colors: 12
+-------------------------------------------------
+Loading citeseer.scc.gra
+Number of nodes: 693947
+Graph: citeseer.scc.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0.068     Colors: 5
+                   Largest Degree First standard: Time (sec): 0.716     Colors: 4
+               Smallest Degree Last (sequential): Time (sec): 0.153     Colors: 2
+      Smallest Degree Last (sequential weighing): Time (sec): 0.464     Colors: 2
+        Smallest Degree Last (parallel weighing): Time (sec): 1.269     Colors: 2
+       Jones-Plassman standard (with threadpool): Time (sec): 0.72      Colors: 6
+    Jones-Plassman standard (without threadpool): Time (sec): 0.382     Colors: 6
+-------------------------------------------------
+Loading citeseer_sub_10720.gra
+Number of nodes: 10720
+Graph: citeseer_sub_10720.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0.002     Colors: 12
+                   Largest Degree First standard: Time (sec): 0.081     Colors: 10
+               Smallest Degree Last (sequential): Time (sec): 0.012     Colors: 10
+      Smallest Degree Last (sequential weighing): Time (sec): 0.05      Colors: 10
+        Smallest Degree Last (parallel weighing): Time (sec): 0.321     Colors: 11
+       Jones-Plassman standard (with threadpool): Time (sec): 0.076     Colors: 12
+    Jones-Plassman standard (without threadpool): Time (sec): 0.273     Colors: 12
+-------------------------------------------------
+Loading ecoo_dag_uniq.gra
+Number of nodes: 12620
+Graph: ecoo_dag_uniq.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0.002     Colors: 5
+                   Largest Degree First standard: Time (sec): 0.021     Colors: 4
+               Smallest Degree Last (sequential): Time (sec): 0.004     Colors: 4
+      Smallest Degree Last (sequential weighing): Time (sec): 0.017     Colors: 4
+        Smallest Degree Last (parallel weighing): Time (sec): 0.1       Colors: 4
+       Jones-Plassman standard (with threadpool): Time (sec): 0.024     Colors: 5
+    Jones-Plassman standard (without threadpool): Time (sec): 0.093     Colors: 5
+-------------------------------------------------
+Loading mtbrv_dag_uniq.gra
+Number of nodes: 9602
+Graph: mtbrv_dag_uniq.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0.001     Colors: 5
+                   Largest Degree First standard: Time (sec): 0.016     Colors: 4
+               Smallest Degree Last (sequential): Time (sec): 0.002     Colors: 4
+      Smallest Degree Last (sequential weighing): Time (sec): 0.013     Colors: 4
+        Smallest Degree Last (parallel weighing): Time (sec): 0.085     Colors: 5
+       Jones-Plassman standard (with threadpool): Time (sec): 0.016     Colors: 5
+    Jones-Plassman standard (without threadpool): Time (sec): 0.072     Colors: 5
+-------------------------------------------------
+Loading v100.gra
+Number of nodes: 100
+Graph: v100.gra
+
+                      Greedy Sequential Coloring: Time (sec): 0         Colors: 78
+                   Largest Degree First standard: Time (sec): 0.012     Colors: 78
+               Smallest Degree Last (sequential): Time (sec): 0.002     Colors: 78
+      Smallest Degree Last (sequential weighing): Time (sec): 0.015     Colors: 78
+        Smallest Degree Last (parallel weighing): Time (sec): 0.018     Colors: 78
+       Jones-Plassman standard (with threadpool): Time (sec): 0.011     Colors: 78
+    Jones-Plassman standard (without threadpool): Time (sec): 0.372     Colors: 78
+Premere un tasto per continuare . . .
