@@ -26,3 +26,4 @@ https://www.cs.cmu.edu/afs/cs/project/pscico-guyb/realworld/www/slidesS18/compre
 
 * quando cerchiamo il minimo colore disponibile tra i nodi adiancenti, non stiamo in realtà trovando il minimo disponibile, ma il minimo colore che un vicino ha (ad esempio, se due vicini hanno colori 2 e 3, noi assegniamo come minimo colore disponibile 4, ma ci sarebbero anche 0 e 1), non so se vada bene 
 * per usare le funzioni come `checkAndColorListOfNodesQueueCounter`, bisognerebbe separare l'identificazione dei nodi da colorare e la fase di colorazione, altrimenti si rischia che ci siano deadlock (per capire se un nodo va colorato o meno, devo controllare il colore di un nodo vicino, ma se un altro thread sta colorando questo nodo vicino, rischio un deadlock)
+

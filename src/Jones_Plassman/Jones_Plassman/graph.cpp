@@ -199,12 +199,13 @@ void graph::readFileDIMACSCSR(string fileName)
 
 }
 
-void graph::JonesPlassmanColoringParallelFindAndColor()
+void graph::JonesPlassmanColoringParallelFindAndColor(const unsigned int maxThreads)
 {
 	while (!this->_q.empty()) _q.pop();
 
 	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
+	//const unsigned int maxThreads = std::thread::hardware_concurrency();
+	//const unsigned int maxThreads = 50;
 	//int n_thread = 0;
 	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
 
@@ -314,13 +315,12 @@ void graph::JonesPlassmanColoringSequential()
 // Assign a random weight to each node 
 	this->assignRandomWeights();
 	bool exit = false;
-
+	
 	while (!exit) {
 		exit = true;
 		// Select maximal independent set
 		for (int i = 0; i < _n_nodes; i++) {	
 			if (_colors[i] == -1) {
-				exit = false;
 				int min_color = isLocalMaximum(i);
 				if (min_color != -1) {
 					int new_color = getMinColorCSR(i, min_color);
@@ -330,7 +330,9 @@ void graph::JonesPlassmanColoringSequential()
 		}
 		// Color maximal independent set
 		for (int i = 0; i < _n_nodes; i++)
-			if (_colors[i] == -1 && _new_colors[i] != -1)
+			if (_new_colors[i] == -1)
+				exit = false;
+			else if (_colors[i] == -1)
 				_colors[i] = _new_colors[i];
 	}
 }

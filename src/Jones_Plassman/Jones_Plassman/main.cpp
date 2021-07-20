@@ -18,11 +18,11 @@ int main() {
 
 	int output_width = 50;
 
-	map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
+	/*map<string, string> GRAPHS = {{"citeseer_sub_10720.gra", "../../../../benchmark/small_dense_real/citeseer_sub_10720.gra"}, {"ba10k5d", "../../../../benchmark/scaleFree/ba10k5d.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmark/sigmod08/mtbrv_dag_uniq.gra"},
 	{"v100.gra", "../../../../benchmark/manual/v100.gra"}, {"ba10k2d", "../../../../benchmark/scaleFree/ba10k2d.gra"},  {"agrocyc_dag_uniq.gra" , "../../../../benchmark/sigmod08/agrocyc_dag_uniq.gra"},
 	{"anthra_dag_uniq.gra" , "../../../../benchmark/sigmod08/anthra_dag_uniq.gra"}, {"ecoo_dag_uniq.gra" , "../../../../benchmark/sigmod08/ecoo_dag_uniq.gra"}
 	,{"citeseer.scc.gra", "../../../../benchmark/large/citeseer.scc.gra"}
-	};
+	};*/
 	
 	/*map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"},
 	{"uniprotenc_100m", "../../../../benchmark/large/uniprotenc_100m.scc.gra"}};*/
@@ -32,6 +32,8 @@ int main() {
 	// map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
 
 	//map<string, string> GRAPHS = { {"go_uniprot", "../../../../benchmark/large/go_uniprot.gra"} };
+	map<string, string> GRAPHS = { {"cit-Patents.scc", "../../../../benchmark/large/cit-Patents.scc.gra"} };
+	//map<string, string> GRAPHS = { {"citeseer.scc", "../../../../benchmark/large/citeseer.scc.gra"} };
 
 	map<string, string>::iterator it;
 	for (it = GRAPHS.begin(); it != GRAPHS.end(); it++) {
@@ -223,21 +225,24 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman with threadpool and find and color in the same function*/
-		start = clock();
-		myGraph.JonesPlassmanColoringParallelFindAndColor();
-		end = clock();
+		
+		for (int maxThreads = 1; maxThreads <= 10; maxThreads += 1) {
+			start = clock();
+			myGraph.JonesPlassmanColoringParallelFindAndColor(maxThreads);
+			end = clock();
 
-		color_parallel = myGraph.checkColoringCSR();
+			color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Jones-Plassman standard (find and color): ";
-		if (color_parallel != -1) {
-			time = double(end - start) / double(CLOCKS_PER_SEC);
-			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			cout << setw(output_width) << "Jones-Plassman standard (find and color): ";
+			if (color_parallel != -1) {
+				time = double(end - start) / double(CLOCKS_PER_SEC);
+				cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			}
+			else
+				cout << "Coloring is wrong!" << endl;
+
+			myGraph.cancelColors();
 		}
-		else
-			cout << "Coloring is wrong!" << endl;
-
-		myGraph.cancelColors();
 
 
 		/*Jones Plassman with overlaps*/

@@ -70,7 +70,7 @@ public:
 	 * which are synchronized after each iteration. The same job finds the nodes to color, it
 	 * places them in a local queue and it colors them after all nodes have been found
 	 */
-	void JonesPlassmanColoringParallelFindAndColor();
+	void JonesPlassmanColoringParallelFindAndColor(const unsigned int maxThreads);
 	/*
 	 * LDF implementation where different iterations may overlap and jobs are
 	 * scheduled by the threads after executing them
