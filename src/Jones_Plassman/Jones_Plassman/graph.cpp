@@ -11,6 +11,7 @@
 #include <random>
 #include <numeric>
 #include <vector>
+#include <unordered_set>
 
 using namespace std;
 
@@ -1465,12 +1466,13 @@ void graph::CalculateWeightsSDL()
 void graph::findAndColorNodes(int from, int to)
 {
 	// Find nodes to color and store them in a local queue
-	queue<pair<int, int>> nodes_to_color;
+	queue<shared_ptr<pair<int, int>>> nodes_to_color;
 	for (int n_id = from; n_id < to; n_id++) {
 		if (_colors[n_id] == -1) {
 			int min_color = this->isLocalMaximum(n_id);
 			if (min_color != -1) {
-				nodes_to_color.push(pair<int, int>(n_id, getMinColorCSR(n_id, min_color)));
+				nodes_to_color.push(make_shared<pair<int, int>>(n_id, getMinColorCSR(n_id, min_color)));
+				//nodes_to_color.push(make_shared<pair<int, int>>(n_id, min_color)); //questo se usi il local max mod chge però per ora va peggio
 			}
 		}
 	}
@@ -1487,7 +1489,7 @@ void graph::findAndColorNodes(int from, int to)
 	if (!nodes_to_color.empty())
 		_all_nodes_colored = false;
 	while (!nodes_to_color.empty()) {
-		_colors[nodes_to_color.front().first] = nodes_to_color.front().second;
+		_colors[nodes_to_color.front()->first] = nodes_to_color.front()->second;
 		nodes_to_color.pop();
 	}
 	{
@@ -1641,7 +1643,7 @@ int graph::isLocalMaximum(int n)
 	int cur_weight;
 	{
 		// Probably this lock is not even needed (no one is writing while this is reading)
-		shared_lock<shared_mutex> lck(_mtx_weights);
+		//shared_lock<shared_mutex> lck(_mtx_weights);
 		cur_weight = _weights[n];
 	}
 	int min_color = -1;
@@ -1652,8 +1654,8 @@ int graph::isLocalMaximum(int n)
 		min_color = 0;
 	for (auto adj_node : _edgesCSR[n]) {
 		// Check if current adjacent node has bigger weight than original node
-		shared_lock<shared_mutex> lck1(_mtx_weights);
-		shared_lock<shared_mutex> lck2(_mtx_colors[adj_node]);
+		//shared_lock<shared_mutex> lck1(_mtx_weights);
+		//shared_lock<shared_mutex> lck2(_mtx_colors[adj_node]); 
 		if (_colors[adj_node] == -1 && _weights[adj_node] >= cur_weight) {
 			return -1;
 		}
@@ -1661,6 +1663,40 @@ int graph::isLocalMaximum(int n)
 		if (_colors[adj_node] >= min_color)
 			min_color = _colors[adj_node] + 1;
 	}
+	return min_color;
+}
+
+// a ragionamento mio dopvrebbe andare meglio ma va peggio
+int graph::isLocalMaximummod(int n)
+{
+	int cur_weight= _weights[n];
+	int i = -1;
+	int min_color = -1;
+	if (cur_weight == -1)
+		return false;
+
+	if (_edgesCSR[n].size() == 0)
+		min_color = 0;
+
+	unordered_set<int> usedcolors;
+
+	for (auto adj_node : _edgesCSR[n]) {
+		// Check if current adjacent node has bigger weight than original node
+		
+		if (_colors[adj_node] == -1 && _weights[adj_node] >= cur_weight) {
+			return -1;
+		}
+		
+		if (_colors[adj_node] != -1)
+			usedcolors.insert(_colors[adj_node]);
+	
+	}
+
+	while(true)
+		if (usedcolors.find(++i) == usedcolors.end())
+			return i;
+	
+
 	return min_color;
 }
 
@@ -1690,6 +1726,7 @@ int graph::getMinColorCSR(int n, int min_color)
 
 	int i = 0;
 
+	
 	if (min_color == -1) {
 		// Iterate over all neighboring nodes to find minimum color
 		for (auto adj_node : _edgesCSR[n]) {
@@ -1697,6 +1734,7 @@ int graph::getMinColorCSR(int n, int min_color)
 				min_color = _colors[adj_node] + 1;
 		}
 	}
+	
 
 	if (min_color == -1 || min_color == 0)
 		return 0;

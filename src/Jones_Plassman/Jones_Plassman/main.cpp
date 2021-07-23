@@ -26,13 +26,14 @@ int main() {
 	
 	/*map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"},
 	{"uniprotenc_100m", "../../../../benchmark/large/uniprotenc_100m.scc.gra"}};*/
-	//map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"} };
+map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} , {"uniprotenc_100m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_100m.scc.gra"} , {"uniprotenc_22m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_22m.scc.gra"} };
 
 	// This does not work :( -> or maybe it works but it takes very very long
 	// map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
 
 	//map<string, string> GRAPHS = { {"go_uniprot", "../../../../benchmark/large/go_uniprot.gra"} };
-	map<string, string> GRAPHS = { {"cit-Patents.scc", "../../../../benchmark/large/cit-Patents.scc.gra"} };
+	//map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} };
+	
 	//map<string, string> GRAPHS = { {"citeseer.scc", "../../../../benchmark/large/citeseer.scc.gra"} };
 
 	map<string, string>::iterator it;
@@ -174,6 +175,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman sequential*/
+/*
 		start = clock();
 		myGraph.JonesPlassmanColoringSequential();
 		end = clock();
@@ -191,6 +193,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman standard with threadpool*/
+/*
 		start = clock();
 		myGraph.JonesPlassmanColoringParallelStandard();
 		end = clock();
@@ -208,6 +211,7 @@ int main() {
 		myGraph.cancelColors();
 
 		/*Jones Plassman standard without threadpool*/
+/*
 		start = clock();
 		myGraph.JonesPlassmanColoringParallelBarriers();
 		end = clock();
@@ -246,7 +250,7 @@ int main() {
 
 
 		/*Jones Plassman with overlaps*/
-		/*start = clock();
+		start = clock();
 		myGraph.JonesPlassmanColoringParallelQueueCounter();
 		end = clock();
 

@@ -144,6 +144,7 @@ private:
 	void ColorNodesLDF(int from, int to);
 	void CalculateWeightsSDL();
 	void findAndColorNodes(int from, int to);
+	int isLocalMaximummod(int n);
 
 private:
 	map<int, node> _nodes;
