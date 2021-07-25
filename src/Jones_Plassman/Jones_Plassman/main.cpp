@@ -26,10 +26,10 @@ int main() {
 	
 	/*map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"},
 	{"uniprotenc_100m", "../../../../benchmark/large/uniprotenc_100m.scc.gra"}};*/
-map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} , {"uniprotenc_100m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_100m.scc.gra"} , {"uniprotenc_22m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_22m.scc.gra"} };
+//map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} , {"uniprotenc_100m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_100m.scc.gra"} , {"uniprotenc_22m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_22m.scc.gra"} };
 
 	// This does not work :( -> or maybe it works but it takes very very long
-	// map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
+	map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
 
 	//map<string, string> GRAPHS = { {"go_uniprot", "../../../../benchmark/large/go_uniprot.gra"} };
 	//map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} };
@@ -71,7 +71,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 
 
 		/*Largest Degree First Standard*/
-		/*start = clock();
+		start = clock();
 		myGraph.LargestDegreeFirstStandard();
 		end = clock();
 
@@ -88,7 +88,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 		myGraph.cancelColors();
 
 		/*Largest Degree First with one function to find and color nodes*/
-		/*start = clock();
+		start = clock();
 		myGraph.LargestDegreeFirstFindAndColor();
 		end = clock();
 
@@ -123,7 +123,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 		myGraph.cancelColors();
 
 		/*Smallest Degree Last sequential*/
-		/*start = clock();
+		start = clock();
 		myGraph.SmallestDegreeLastSequential();
 		end = clock();
 
@@ -140,7 +140,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 		myGraph.cancelColors();
 
 		/*Smallest Degree Last*/
-		/*start = clock();
+		start = clock();
 		myGraph.SmallestDegreeLastStandard();
 		end = clock();
 
@@ -158,7 +158,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 
 
 		/*Smallest Degree Last parallel weighing*/
-		/*start = clock();
+		start = clock();
 		myGraph.SmallestDegreeLastParallelWeighing();
 		end = clock();
 
@@ -175,7 +175,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 		myGraph.cancelColors();
 
 		/*Jones Plassman sequential*/
-/*
+
 		start = clock();
 		myGraph.JonesPlassmanColoringSequential();
 		end = clock();
@@ -193,7 +193,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 		myGraph.cancelColors();
 
 		/*Jones Plassman standard with threadpool*/
-/*
+
 		start = clock();
 		myGraph.JonesPlassmanColoringParallelStandard();
 		end = clock();
@@ -211,7 +211,7 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 		myGraph.cancelColors();
 
 		/*Jones Plassman standard without threadpool*/
-/*
+
 		start = clock();
 		myGraph.JonesPlassmanColoringParallelBarriers();
 		end = clock();
@@ -230,9 +230,9 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 
 		/*Jones Plassman with threadpool and find and color in the same function*/
 		
-		for (int maxThreads = 1; maxThreads <= 10; maxThreads += 1) {
+		//for (int maxThreads = 1; maxThreads <= 10; maxThreads += 1) {
 			start = clock();
-			myGraph.JonesPlassmanColoringParallelFindAndColor(maxThreads);
+			myGraph.JonesPlassmanColoringParallelFindAndColor(8);
 			end = clock();
 
 			color_parallel = myGraph.checkColoringCSR();
@@ -246,11 +246,11 @@ map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/b
 				cout << "Coloring is wrong!" << endl;
 
 			myGraph.cancelColors();
-		}
+		//}
 
 
 		/*Jones Plassman with overlaps*/
-		start = clock();
+		/*start = clock();
 		myGraph.JonesPlassmanColoringParallelQueueCounter();
 		end = clock();
 
