@@ -2,8 +2,10 @@
 
 #include "graph.h"
 #include <iostream>
+#include <fstream>  
 #include <iomanip>
 
+void saveToFile(ofstream& myfile, string graph, string algo, double time, int colors);
 
 int main() {
 	
@@ -26,18 +28,33 @@ int main() {
 	
 	/*map<string, string> GRAPHS = { {"uniprotenc_22m", "../../../../benchmark/large/uniprotenc_22m.scc.gra"},
 	{"uniprotenc_100m", "../../../../benchmark/large/uniprotenc_100m.scc.gra"}};*/
-//map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} , {"uniprotenc_100m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_100m.scc.gra"} , {"uniprotenc_22m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_22m.scc.gra"} };
+
+	//PER PC GIO
+	map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} , {"uniprotenc_100m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_100m.scc.gra"} , {"uniprotenc_22m", "../../../../benchmarks/benchmarks/benchmark/large/uniprotenc_22m.scc.gra"},
+	{"citeseer_sub_10720.gra", "../../../../benchmarks/benchmarks/benchmark/small_dense_real/citeseer_sub_10720.gra"},  {"mtbrv_dag_uniq.gra" , "../../../../benchmarks/benchmarks/benchmark/sigmod08/mtbrv_dag_uniq.gra"},
+	{"v100.gra", "../../../../benchmarks/benchmarks/benchmark/manual/v100.gra"}, {"ba10k2d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k2d.gra"},  {"agrocyc_dag_uniq.gra" , "../../../../benchmarks/benchmarks/benchmark/sigmod08/agrocyc_dag_uniq.gra"},
+	{"anthra_dag_uniq.gra" , "../../../../benchmarks/benchmarks/benchmark/sigmod08/anthra_dag_uniq.gra"}, {"ecoo_dag_uniq.gra" , "../../../../benchmarks/benchmarks/benchmark/sigmod08/ecoo_dag_uniq.gra"}
+	, {"citeseer.scc.gra", "../../../../benchmarks/benchmarks/benchmark/large/citeseer.scc.gra"} }; // {"citeseerx", "../../../../benchmarks/benchmarks/benchmark/large/citeseerx.gra"} };
+
 
 	// This does not work :( -> or maybe it works but it takes very very long
-	map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
+	//map<string, string> GRAPHS = { {"citeseerx", "../../../../benchmark/large/citeseerx.gra"} };
 
 	//map<string, string> GRAPHS = { {"go_uniprot", "../../../../benchmark/large/go_uniprot.gra"} };
 	//map<string, string> GRAPHS = { { "ba10k5d", "../../../../benchmarks/benchmarks/benchmark/scaleFree/ba10k5d.gra"} };
 	
 	//map<string, string> GRAPHS = { {"citeseer.scc", "../../../../benchmark/large/citeseer.scc.gra"} };
 
+	ofstream myfile;
+	myfile.open("results.csv");
+	
+
 	map<string, string>::iterator it;
 	for (it = GRAPHS.begin(); it != GRAPHS.end(); it++) {
+
+
+	
+
 
 		graph myGraph = graph();
 
@@ -59,13 +76,16 @@ int main() {
 		color_parallel = myGraph.checkColoringCSR();
 		
 		cout << endl;
-		cout << setw(output_width) << "Greedy Sequential Coloring: ";
+		string name = "Greedy Sequential Coloring";
+		cout << setw(output_width) << name << " :" ;
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample ,name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
+
 
 		myGraph.cancelColors();
 
@@ -77,10 +97,12 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Largest Degree First standard: ";
+		name = "Largest Degree First standard";
+		cout << setw(output_width) << name << " :" ;
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -93,11 +115,12 @@ int main() {
 		end = clock();
 
 		color_parallel = myGraph.checkColoringCSR();
-
-		cout << setw(output_width) << "Largest Degree First (find and color): ";
+		name= "Largest Degree First (find and color)";
+		cout << setw(output_width) << name << " :";
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -129,10 +152,13 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Smallest Degree Last (sequential): ";
+		name = "Smallest Degree Last (sequential)";
+		cout << setw(output_width) << name << " :";
+
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -146,10 +172,14 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Smallest Degree Last (sequential weighing): ";
+		
+		name = "Smallest Degree Last (sequential weighing)";
+		cout << setw(output_width) << name << " :" ;
+
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -164,10 +194,14 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Smallest Degree Last (parallel weighing): ";
+		
+		name ="Smallest Degree Last (parallel weighing)";
+		cout << setw(output_width) << name << " :" ;
+
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -182,10 +216,13 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Jones-Plassman (sequential): ";
+		name = "Jones - Plassman(sequential)";
+		cout << setw(output_width) << name << " :";
+
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -200,10 +237,13 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Jones-Plassman standard (with threadpool): ";
+		name = "Jones - Plassman standard(with threadpool)";
+		cout << setw(output_width) << name << " :";
+
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -218,10 +258,13 @@ int main() {
 
 		color_parallel = myGraph.checkColoringCSR();
 
-		cout << setw(output_width) << "Jones-Plassman standard (without threadpool): ";
+		name = "Jones-Plassman standard (without threadpool)";
+		cout << setw(output_width) << name << " :" ;
+
 		if (color_parallel != -1) {
 			time = double(end - start) / double(CLOCKS_PER_SEC);
 			cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+			saveToFile(myfile, graph_sample, name, time, color_parallel);
 		}
 		else
 			cout << "Coloring is wrong!" << endl;
@@ -237,10 +280,14 @@ int main() {
 
 			color_parallel = myGraph.checkColoringCSR();
 
-			cout << setw(output_width) << "Jones-Plassman standard (find and color): ";
+			
+			name = "Jones-Plassman standard (find and color): ";
+			cout << setw(output_width) << name << " :" ;
+
 			if (color_parallel != -1) {
 				time = double(end - start) / double(CLOCKS_PER_SEC);
 				cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+				saveToFile(myfile, graph_sample, name, time, color_parallel);
 			}
 			else
 				cout << "Coloring is wrong!" << endl;
@@ -285,14 +332,22 @@ int main() {
 
 		myGraph.cancelColors();
 		*/
+			
 	}
+	myfile << "Run performed on DELL XPS" << endl;
+	myfile.close();
+
 
 	system("pause");
 	return 0;
 }
 
+void saveToFile(ofstream& myfile, string name, string algo, double time, int colors) {
+
+	myfile << name << "," << algo << "," << time << "," << colors << "\n";
 
 
+}
 
 
 

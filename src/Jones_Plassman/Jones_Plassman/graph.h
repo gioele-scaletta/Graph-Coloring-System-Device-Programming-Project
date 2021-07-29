@@ -17,8 +17,9 @@ public:
 	graph();
 	~graph();
 
-	int getNodesNumber();
-	int getEdgesNumber();
+	graph(const graph& toCopy); //non ho capito pervhè toglienmdolo non compila
+
+	
 	void readFileDIMACSCSR(string fileName);
 	/*
 	 * Sequential version of Jones-Plassman algorithm
