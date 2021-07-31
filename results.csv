@@ -1,0 +1,53 @@
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,2,1,0.033,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),2,1,0.027,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),2,1,0.018,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,2,5,0.018,14
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),2,5,0.028,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),2,5,0.017,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,2,10,0.02,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),2,10,0.023,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),2,10,0.017,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,2,100,0.023,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),2,100,0.025,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),2,100,0.021,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,3,1,0.016,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),3,1,0.024,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),3,1,0.015,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,3,5,0.016,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),3,5,0.024,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),3,5,0.013,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,3,10,0.016,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),3,10,0.025,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),3,10,0.016,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,3,100,0.023,14
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),3,100,0.025,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),3,100,0.023,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,5,1,0.015,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),5,1,0.023,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),5,1,0.013,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,5,5,0.015,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),5,5,0.022,14
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),5,5,0.013,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,5,10,0.013,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),5,10,0.019,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),5,10,0.014,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,5,100,0.027,14
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),5,100,0.027,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),5,100,0.022,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,8,1,0.015,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),8,1,0.022,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),8,1,0.015,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,8,5,0.015,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),8,5,0.021,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),8,5,0.015,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,8,10,0.017,14
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),8,10,0.021,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),8,10,0.017,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,8,100,0.055,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),8,100,0.047,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),8,100,0.056,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,12,1,0.016,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),12,1,0.025,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),12,1,0.015,15
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,12,5,0.017,13
+rgg_n_2_15_s0.graph,32768,S

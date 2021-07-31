@@ -20,7 +20,9 @@ public:
 	graph(const graph& toCopy); //non ho capito pervhè toglienmdolo non compila
 
 	
-	void readFileDIMACSCSR(string fileName);
+	void readFileDIMACS10(string fileName);
+	void readFileDIMACS(string fileName);
+
 	/*
 	 * Sequential version of Jones-Plassman algorithm
 	 */
@@ -31,20 +33,20 @@ public:
 	 * Synchronization is done by means of condition variables (a thread is launched as soon as
 	 * one of the previous threads finishes)
 	 */
-	void JonesPlassmanColoringParallelBarriers();
+	void JonesPlassmanColoringParallelBarriers(unsigned int maxThreads, int coef);
 	/*
 	 * Standard Jones-Plassman algorithm implementation: no overlap between different iterations
 	 * can occur. Threads are synchronized after each iteration.
 	 * A threadpool is created and jobs are scheduled by the main function and executed by threads
 	 */
-	void JonesPlassmanColoringParallelStandard();
+	void JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int coef);
 	/*
 	 * Implementation of the Jones Plassman algorithm. No overlap between different iterations.
 	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
 	 * which are synchronized after each iteration. The same job finds the nodes to color, it
 	 * places them in a local queue and it colors them after all nodes have been found
 	 */
-	void JonesPlassmanColoringParallelFindAndColor(const unsigned int maxThreads);
+	void JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, int coef);
 	/*
 	 * LDF implementation where different iterations may overlap and jobs are
 	 * scheduled by the threads after executing them
@@ -58,14 +60,14 @@ public:
 	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
 	 * which are synchronized after each iteration
 	 */
-	void LargestDegreeFirstStandard();
+	void LargestDegreeFirstStandard(unsigned int maxThreads, int coef);
 	/*
 	 * Implementation of the LDF algorithm. No overlap between different iterations.
 	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
 	 * which are synchronized after each iteration. The same job finds the nodes to color, it
 	 * places them in a local queue and it colors them after all nodes have been found
 	 */
-	void LargestDegreeFirstFindAndColor();
+	void LargestDegreeFirstFindAndColor(unsigned int maxThreads, int coef);
 	/*
 	 * Sequential implementation of the Smallest Degree Last algorithm
 	 */
@@ -75,17 +77,19 @@ public:
 	 * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
 	 * synchronized after each iteration. Weight assignment is parallelized.
 	 */
-	void SmallestDegreeLastParallelWeighing();
+	void SmallestDegreeLastParallelWeighing(unsigned int maxThreads, int coef);
 	/*
 	 * Standard implementation of the Smallest Degree Last algorithm where different iterations
 	 * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
 	 * synchronized after each iteration. Weight assignment is not parallelized.
 	 */
-	void SmallestDegreeLastStandard();
+	void SmallestDegreeLastStandard(unsigned int maxThreads, int coef);
 	/*
 	 * Sequential greedy coloring algorithm
 	 */
 	void GreedySequential();
+
+	int getNNodes();
 
 private:
 	void assignRandomWeights();

@@ -12,6 +12,7 @@
 #include <numeric>
 #include <vector>
 #include <unordered_set>
+#include <string>  
 
 using namespace std;
 
@@ -26,7 +27,61 @@ graph::~graph()
 }
 
 
-void graph::readFileDIMACSCSR(string fileName)
+void graph::readFileDIMACS(string fileName)
+{
+	this->_edgesCSR.clear();
+	this->_colors.clear();
+	this->_weights.clear();
+	this->_tmp_degree.clear();
+	ifstream fs(fileName);
+	string line;
+	if (fs.is_open()) {
+		getline(fs, line);
+		int n_lines, n_edges;
+		// ignore header if present
+		try {
+			n_lines = stoi(line.substr(0, line.find(" ")));
+			n_edges = stoi(line.substr(line.find(" "), line.size()));
+		}
+		catch (const exception e) {
+			getline(fs, line);
+			n_lines = stoi(line);
+			n_edges = stoi(line.substr(line.find(" "), line.size()));
+		}
+		cout << "Number of nodes: " << n_lines << " Number of edges: " << n_edges << endl;
+		this->_n_nodes = n_lines;
+		this->_edgesCSR.resize(n_lines);
+		for (int i = 0; i < n_lines; i++) {
+			getline(fs, line);
+			stringstream ss;
+			ss << line;
+			int n2;
+			string temp;
+			ss >> temp;
+			// All nodes are initially not colored (color -1) and with weight -1
+			this->_colors.push_back(-1);
+			this->_weights.push_back(-1);
+			this->_tmp_degree.push_back(-1);
+			this->_new_colors.push_back(-1);
+			this->_new_weights.push_back(-1);
+			// Loop over all other nodes and create an edge for each of them
+			while (!ss.eof()) {
+				ss >> temp;
+				n2 = stoi(temp);
+				// Add edge in the edges vector (for both nodes -> treat each graph as indirect)
+				this->_edgesCSR[i].push_back(n2 - 1);
+				this->_edgesCSR[n2 - 1].push_back(i);
+			}
+		}
+		fs.close();
+	}
+	else {
+		cout << "Error opening file!\n";
+	}
+
+}
+
+void graph::readFileDIMACS10(string fileName)
 {
 	this->_edgesCSR.clear();
 	this->_colors.clear();
@@ -83,7 +138,7 @@ void graph::readFileDIMACSCSR(string fileName)
 
 }
 
-void graph::JonesPlassmanColoringParallelFindAndColor(const unsigned int maxThreads)
+void graph::JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
 
@@ -91,7 +146,7 @@ void graph::JonesPlassmanColoringParallelFindAndColor(const unsigned int maxThre
 	//const unsigned int maxThreads = std::thread::hardware_concurrency();
 	//const unsigned int maxThreads = 50;
 	//int n_thread = 0;
-	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
 
 	this->assignRandomWeights();
 
@@ -107,8 +162,24 @@ void graph::JonesPlassmanColoringParallelFindAndColor(const unsigned int maxThre
 
 	while (!_all_nodes_colored) {
 
-		_N_THREADS = ceil(_n_nodes / nodes_per_thread) + 1;
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_N_THREADS = _n_nodes / nodes_per_thread;
+			else
+				_N_THREADS = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_N_THREADS = _n_nodes;
+
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
+
 		_all_nodes_colored = true;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
@@ -148,6 +219,7 @@ void graph::JonesPlassmanColoringSequential()
 	this->assignRandomWeights();
 	bool exit = false;
 	
+
 	while (!exit) {
 		exit = true;
 		// Select maximal independent set
@@ -174,12 +246,10 @@ void graph::JonesPlassmanColoringSequential()
  * can occur. Threads are synchronized after each iteration.
  * A threadpool is created and jobs are scheduled by the main function and executed by threads
  */
-void graph::JonesPlassmanColoringParallelStandard()
+void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int coef = 1; // coefficient to calculate nodes per thread
+
 	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
 	// Assign a random weight to each node 
 	this->assignRandomWeights();
@@ -200,7 +270,14 @@ void graph::JonesPlassmanColoringParallelStandard()
 		//_nodes_to_color.clear();
 		//_colored_nodes = 0;
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread)+1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
@@ -220,8 +297,16 @@ void graph::JonesPlassmanColoringParallelStandard()
 			unique_lock<mutex> lck(_mtx);
 			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
 		}
+		
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread)+1;
 		_all_nodes_colored = true;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
@@ -260,14 +345,11 @@ void graph::JonesPlassmanColoringParallelStandard()
  * A threadpool is created, jobs are scheduled by the main function and executed by threads,
  * which are synchronized after each iteration
  */
-void graph::LargestDegreeFirstStandard()
+void graph::LargestDegreeFirstStandard(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
 
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	//int n_thread = 0;
-	const int nodes_per_thread = floor(_n_nodes / maxThreads) +1;
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) +1;
 
 	this->assignDegreeWeights();
 
@@ -284,12 +366,20 @@ void graph::LargestDegreeFirstStandard()
 
 	while (!_all_nodes_colored) {
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
+
 
 			{
 				function<void()> newJob = [this, from, to] {findNodesToColor(from, to); };
@@ -303,8 +393,16 @@ void graph::LargestDegreeFirstStandard()
 			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
 		}
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
 		_all_nodes_colored = true;
+
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
@@ -343,14 +441,12 @@ void graph::LargestDegreeFirstStandard()
  * which are synchronized after each iteration. The same job finds the nodes to color, it
  * places them in a local queue and it colors them after all nodes have been found
  */
-void graph::LargestDegreeFirstFindAndColor()
+void graph::LargestDegreeFirstFindAndColor(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
 
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
 	//int n_thread = 0;
-	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
 
 	this->assignDegreeWeights();
 
@@ -366,8 +462,23 @@ void graph::LargestDegreeFirstFindAndColor()
 
 	while (!_all_nodes_colored) {
 
-		_N_THREADS = ceil(_n_nodes / nodes_per_thread) + 1;
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_N_THREADS = _n_nodes / nodes_per_thread;
+			else
+				_N_THREADS = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_N_THREADS = _n_nodes;
+
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
 		_all_nodes_colored = true;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
@@ -427,13 +538,11 @@ void graph::SmallestDegreeLastSequential()
  * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
  * synchronized after each iteration. Weight assignment is parallelized.
  */
-void graph::SmallestDegreeLastParallelWeighing()
+void graph::SmallestDegreeLastParallelWeighing(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
 
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int nodes_per_thread = floor(_n_nodes / maxThreads) + 1;
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
 
 	this->CalculateWeightsSDLParallel();
 	// Solve conflicts
@@ -452,7 +561,16 @@ void graph::SmallestDegreeLastParallelWeighing()
 	_all_nodes_colored = false;
 
 	while (!_all_nodes_colored) {
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
+
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
@@ -469,8 +587,17 @@ void graph::SmallestDegreeLastParallelWeighing()
 			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
 		}
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
+
 		_all_nodes_colored = true;
+
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
@@ -507,13 +634,9 @@ void graph::SmallestDegreeLastParallelWeighing()
  * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
  * synchronized after each iteration. Weight assignment is not parallelized. 
  */
-void graph::SmallestDegreeLastStandard()
+void graph::SmallestDegreeLastStandard(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
-
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int coef = 1; // coefficient to calculate nodes per thread
 	const int nodes_per_thread = ceil(_n_nodes / (maxThreads * coef)) + 1;
 
 	this->CalculateWeightsSDL();
@@ -529,8 +652,15 @@ void graph::SmallestDegreeLastStandard()
 
 	while (!_all_nodes_colored) {
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
-		
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
+
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
@@ -546,7 +676,16 @@ void graph::SmallestDegreeLastStandard()
 			unique_lock<mutex> lck(_mtx);
 			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
 		}
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
+
 		_all_nodes_colored = true;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
@@ -596,6 +735,11 @@ void graph::GreedySequential()
 	}
 }
 
+int graph::getNNodes()
+{
+	return _n_nodes;
+}
+
 
 
 /*
@@ -604,11 +748,8 @@ void graph::GreedySequential()
  * Synchronization is done by means of condition variables (a thread is launched as soon as
  * one of the previous threads finishes)
  */
-void graph::JonesPlassmanColoringParallelBarriers()
+void graph::JonesPlassmanColoringParallelBarriers(unsigned int maxThreads, int coef)
 {
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int coef = 1; // coefficient to evaluate nodes per thread (so far, best tested is 1)
 	const int nodes_per_thread = ceil(_n_nodes / (coef * maxThreads)) + 1;
 	int colored_nodes = 0;
 	clock_t start, end;
@@ -800,8 +941,9 @@ void graph::assignRandomWeights()
 {
 	for (int i = 0; i < _weights.size(); i++) {
 		_weights[i] = rand();
-		while (weightConflict(i))
-			_weights[i] = rand();
+		while (weightConflict(i)) {
+			_weights[i] = rand() * (rand() % 100);
+		}
 	}
 }
 
@@ -840,7 +982,7 @@ void graph::CalculateWeightsSDL()
 			while (weightConflict(n))
 				_weights[n] = rand() % (_weights[n] * 2) + 1;
 			weighted_nodes++;
-			// Decrease tmp degrees of neighboring nodes (WORKS MUCH BETTER WITHOUT THIS!)
+			// Decrease tmp degrees of neighboring nodes
 			for (int adj_node : _edgesCSR[n])
 				if(_weights[adj_node] == -1)
 					_tmp_degree[adj_node]--;
@@ -909,7 +1051,15 @@ void graph::CalculateWeightsSDLParallel()
 
 	while (!_all_nodes_colored) {
 
-		_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		if (nodes_per_thread != 1) {
+			if (_n_nodes % nodes_per_thread == 0)
+				_n_thread = _n_nodes / nodes_per_thread;
+			else
+				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+		}
+		else
+			_n_thread = _n_nodes;
+
 		_increase_k = true;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
@@ -933,7 +1083,14 @@ void graph::CalculateWeightsSDLParallel()
 
 		else {
 
-			_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+			if (nodes_per_thread != 1) {
+				if (_n_nodes % nodes_per_thread == 0)
+					_n_thread = _n_nodes / nodes_per_thread;
+				else
+					_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+			}
+			else
+				_n_thread = _n_nodes;
 			_all_nodes_colored = true;
 
 			for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
@@ -982,6 +1139,8 @@ void graph::weighNodes(int from, int to) {
 					for (int adj_node : _edgesCSR[n_id])
 						if (_weights[adj_node] == -1)
 							_tmp_degree[adj_node]--;
+					//while (weightConflict(n_id))
+					//	_weights[n_id] = rand() % (2 * _weights[n_id]) + 1;
 				}
 			}
 			else
@@ -1000,11 +1159,9 @@ void graph::findNodesToWeigh(int from, int to) {
 
 	for (int n_id = from; n_id < to; n_id++) {
 		
-		if (_tmp_degree[n_id] <= _k && _weights[n_id] == -1) {
+		if (_weights[n_id] == -1 && _tmp_degree[n_id] <= _k ) {
 			_new_weights[n_id] = _i;
 			_increase_k = false;
-			//unique_lock<mutex> lck(mutex_node_to_color);
-			//_to_weigh.push_back(n_id);
 		}
 	}
 	{
