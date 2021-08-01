@@ -146,7 +146,7 @@ void graph::JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, i
 	//const unsigned int maxThreads = std::thread::hardware_concurrency();
 	//const unsigned int maxThreads = 50;
 	//int n_thread = 0;
-	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads )) + 1;
 
 	this->assignRandomWeights();
 
@@ -446,7 +446,7 @@ void graph::LargestDegreeFirstFindAndColor(unsigned int maxThreads, int coef)
 	while (!this->_q.empty()) _q.pop();
 
 	//int n_thread = 0;
-	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
+	const int nodes_per_thread = floor(_n_nodes / (maxThreads )) + 1;
 
 	this->assignDegreeWeights();
 
