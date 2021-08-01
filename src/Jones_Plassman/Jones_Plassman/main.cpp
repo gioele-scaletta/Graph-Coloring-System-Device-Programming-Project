@@ -30,12 +30,159 @@ int main() {
 
 	ofstream myfile;
 
-	
+	//sistema con matrice in cui per ogni n_thread e coef value salviamo la somma dei tempi per poi trovare la combinazione di parametri con somma minore. Un modo
+	// "più pulito" sarebbe semplicemente spostare il for più esterno (itera sui grafi) come più interno, ma questo comporterebbe ricaricare ogni volta i grafi
+
+	double best_res_mat[/*N_threads.size()*/6][/*coefs.size()*/ 4];
 	
 
-	n_threads =8;
+	for (i = 0; i < N_threads.size(); i++)
+		for (j = 0; j < coefs.size(); j++)
+			best_res_mat[i][j] = 0;
+
 	
-	coef = 10;
+	myfile.open("../../../results.csv", std::ofstream::trunc);
+
+
+	for (auto& p : fs::recursive_directory_iterator("../../../../benchmarks/benchmarks/rgg")) {
+
+
+		if (p.path().string().compare(p.path().string().size() - 4, 4, ".gra") == 0 || p.path().string().compare(p.path().string().size() - 6, 6, ".graph") == 0) {
+			graph myGraph = graph();
+
+			graph_sample = p.path().filename().string();
+			graph_sample_path = p.path().string();
+
+			cout << "-------------------------------------------------" << endl;
+			cout << "Loading " << graph_sample << endl;
+
+			if (p.path().string().compare(p.path().string().size() - 4, 4, ".gra") == 0)
+				myGraph.readFileDIMACS10(graph_sample_path);
+			else
+				myGraph.readFileDIMACS(graph_sample_path);
+
+			cout << "Graph: " << graph_sample << endl;
+
+			for (i = 0; i < N_threads.size(); i++) {
+				n_threads = N_threads[i];
+
+				for (j = 0; j < coefs.size(); j++) {
+					coef = coefs[j];
+
+					curr_time = best_res_mat[i][j];
+
+
+					/*Largest Degree First Standard*/
+					start = clock();
+					myGraph.LargestDegreeFirstStandard(n_threads, coef);
+					end = clock();
+
+					color_parallel = myGraph.checkColoringCSR();
+
+					name = "Largest Degree First standard";
+					cout << setw(output_width) << name << " :";
+					if (color_parallel != -1) {
+						time = double(end - start) / double(CLOCKS_PER_SEC);
+						curr_time += time;
+						cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+						myfile << graph_sample << "," << myGraph.getNNodes() << "," << name << "," << n_threads << "," << coef << "," << time << "," << color_parallel << "\n";
+					}
+					else
+						cout << "Coloring is wrong!" << endl;
+
+					myGraph.cancelColors();
+
+
+					/*Smallest Degree Last*/
+					start = clock();
+					myGraph.SmallestDegreeLastStandard(n_threads, coef);
+					end = clock();
+
+					color_parallel = myGraph.checkColoringCSR();
+
+
+					name = "Smallest Degree Last (sequential weighing)";
+					cout << setw(output_width) << name << " :";
+
+					if (color_parallel != -1) {
+						time = double(end - start) / double(CLOCKS_PER_SEC);
+						curr_time += time;
+						cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+						myfile << graph_sample << "," << myGraph.getNNodes() << "," << name << "," << n_threads << "," << coef << "," << time << "," << color_parallel << "\n";
+					}
+					else
+						cout << "Coloring is wrong!" << endl;
+
+					myGraph.cancelColors();
+
+
+					/*Jones Plassman standard with threadpool*/
+
+					start = clock();
+					myGraph.JonesPlassmanColoringParallelStandard(n_threads, coef);
+					end = clock();
+
+					color_parallel = myGraph.checkColoringCSR();
+
+					name = "Jones - Plassman standard(with threadpool)";
+					cout << setw(output_width) << name << " :";
+
+					if (color_parallel != -1) {
+						time = double(end - start) / double(CLOCKS_PER_SEC);
+						curr_time += time;
+						cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+						myfile << graph_sample << "," << myGraph.getNNodes() << "," << name << "," << n_threads << "," << coef << "," << time << "," << color_parallel << "\n";
+					}
+					else
+						cout << "Coloring is wrong!" << endl;
+
+					myGraph.cancelColors();
+
+					best_res_mat[i][j] = curr_time;
+
+				}
+
+				/*if (curr_time < min_time) {
+				min_time = curr_time;
+				best_coef = coef;
+				best_n_thread = n_threads;
+				}*/
+			}
+		}
+
+	}
+
+	//find best hyperparameters
+	for (i = 0; i < N_threads.size(); i++){
+		for (j = 0; j < coefs.size(); j++){
+			if (min > best_res_mat[i][j]) {
+				min = best_res_mat[i][j];
+				mini = i;
+				minj = j;
+			}
+			}
+			}
+
+	n_threads = N_threads[mini];
+	coef = coefs[minj];
+
+	if (n_threads > 20 || coef > 100) {
+		cout << "not working" << endl;
+		return 0;
+	}
+
+	myfile << "best results: n_thread= " << n_threads << " coef= " << coef << endl;
+
+	cout << "best results: n_thread= " << n_threads << " coef= " << coef << endl;
+
+	myfile << "Run performed on DELL XPS" << endl;
+
+	myfile.close();
+	
+
+	//n_threads =8;
+	
+	//coef = 5;
 
 	myfile.open("../../../results_best.csv", std::ofstream::trunc);
 
