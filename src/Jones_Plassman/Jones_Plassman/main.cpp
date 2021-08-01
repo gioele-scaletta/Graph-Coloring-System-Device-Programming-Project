@@ -8,7 +8,9 @@
 #include <map>
 namespace fs = std::experimental::filesystem;
 
-
+/* Usata per i diversi path e per specificare il processore*/
+#define ANDRE
+//#define GIO
 
 int main() {
 
@@ -23,29 +25,32 @@ int main() {
 	double min = 9999999;
 	int mini =0, minj=0;
 	string graph_sample, graph_sample_path;
-	vector<int> N_threads = { 2, 3, 5, 6, 7, 8, 12, 20}; //!!!!!Here probably better to use numbers rwelative to max_threads and thus relative to machine on which program running so that program sort of fine tunes itself deopending on pc features
+	vector<int> N_threads = { 2, 3, 5, 8, 12, 20}; //!!!!!Here probably better to use numbers rwelative to max_threads and thus relative to machine on which program running so that program sort of fine tunes itself deopending on pc features
 	vector<int> coefs = { 1, 5, 10, 100 };
 	int coef, n_threads;
 	int output_width = 50, i, j;
-
+#if defined(GIO)
+	string path1 = "../../../../benchmarks/benchmarks/rgg", path2= "../../../../benchmarks/benchmarks";
+#elif defined(ANDRE)
+	string path1= "../../../../benchmark/parameter_tuning", path2= "../../../../benchmark";
+#endif
 	ofstream myfile;
 
 	//sistema con matrice in cui per ogni n_thread e coef value salviamo la somma dei tempi per poi trovare la combinazione di parametri con somma minore. Un modo
 	// "più pulito" sarebbe semplicemente spostare il for più esterno (itera sui grafi) come più interno, ma questo comporterebbe ricaricare ogni volta i grafi
-
-	double best_res_mat[/*N_threads.size()*/6][/*coefs.size()*/ 4];
 	
+	vector<vector<double>> best_res_mat;
 
-	for (i = 0; i < N_threads.size(); i++)
+	// Initialize matrix of results
+	for (i = 0; i < N_threads.size(); i++) {
+		best_res_mat.push_back(vector<double>());
 		for (j = 0; j < coefs.size(); j++)
-			best_res_mat[i][j] = 0;
+			best_res_mat[i].push_back(0.0);
+	}
 
-	
 	myfile.open("../../../results.csv", std::ofstream::trunc);
 
-
-	for (auto& p : fs::recursive_directory_iterator("../../../../benchmarks/benchmarks/rgg")) {
-
+	for (auto& p : fs::recursive_directory_iterator(path1)) {
 
 		if (p.path().string().compare(p.path().string().size() - 4, 4, ".gra") == 0 || p.path().string().compare(p.path().string().size() - 6, 6, ".graph") == 0) {
 			graph myGraph = graph();
@@ -70,7 +75,6 @@ int main() {
 					coef = coefs[j];
 
 					curr_time = best_res_mat[i][j];
-
 
 					/*Largest Degree First Standard*/
 					start = clock();
@@ -141,15 +145,8 @@ int main() {
 					best_res_mat[i][j] = curr_time;
 
 				}
-
-				/*if (curr_time < min_time) {
-				min_time = curr_time;
-				best_coef = coef;
-				best_n_thread = n_threads;
-				}*/
 			}
 		}
-
 	}
 
 	//find best hyperparameters
@@ -160,8 +157,8 @@ int main() {
 				mini = i;
 				minj = j;
 			}
-			}
-			}
+		}
+	}
 
 	n_threads = N_threads[mini];
 	coef = coefs[minj];
@@ -175,26 +172,22 @@ int main() {
 
 	cout << "best results: n_thread= " << n_threads << " coef= " << coef << endl;
 
+#if defined(GIO)
 	myfile << "Run performed on DELL XPS" << endl;
+#elif defined(ANDRE)
+	myfile << "Run performed on Intel i7-8550U" << endl;
+#endif
 
 	myfile.close();
-	
-
-	//n_threads =8;
-	
-	//coef = 5;
-
-	myfile.open("../../../results_best.csv", std::ofstream::trunc);
 
 
 	/*
-	* Run with best n_threads and coef
-	*/
-	//int n_threads = best_n_thread;
-	//int coef = best_coef;
+     * Run with best n_threads and coef
+	 */
 
+	myfile.open("../../../results_best.csv", std::ofstream::trunc);
 
-	for (auto& p : fs::recursive_directory_iterator("../../../../benchmarks/benchmarks")) {
+	for (auto& p : fs::recursive_directory_iterator(path2)) {
 
 		if (p.path().string().compare(p.path().string().size() - 4, 4, ".gra") == 0 || p.path().string().compare(p.path().string().size() - 6, 6, ".graph") == 0) {
 			graph myGraph = graph();
@@ -398,7 +391,12 @@ int main() {
 	}
 
 
+#if defined(GIO)
 	myfile << "Run performed on DELL XPS" << endl;
+#elif defined(ANDRE)
+	myfile << "Run performed on Intel i7-8550U" << endl;
+#endif
+
 	myfile.close();
 
 	system("pause");
