@@ -1,0 +1,27 @@
+\begin{table}[h]
+\begin{tabular}{l | c c c c c c c c c c c c c c c c c c }
+ & Nodes & JP0 & SDL0 & Greedy0 & LDF1 & JP1 & SDL1 & LDF2 & JP2 & JP3 & \\
+\hline
+cit-Patents.scc.gra & 3774768 & 14.386 & 6.144 & 1.766 & 9.892 & 5.738 & 3.51 & 8.796 & 4.8 & 4.413\\
+go\_uniprot.gra & 6967956 & 27.744 & 3.723 & 2.579 & 1.44 & 18.983 & 3.337 & 1.596 & 16.586 & 8.885\\
+citeseer.scc.gra & 693947 & 0.107 & 0.092 & 0.067 & 0.038 & 0.177 & 0.067 & 0.068 & 0.056 & 0.087\\
+citeseerx.gra & 6540401 & 15.639 & 4.031 & 1.985 & 7.448 & 9.089 & 2.424 & 5.992 & 7.186 & 6.277\\
+\end{tabular}
+\caption{Times (sec) to color different graphs using different algorithms}
+\end{table}
+
+
+
+
+
+\begin{table}[h]
+\begin{tabular}{l | c c c c c c c c c c c c c c c c c c }
+ & Nodes & JP0 & SDL0 & Greedy0 & LDF1 & JP1 & SDL1 & LDF2 & JP2 & JP3 & \\
+\hline
+cit-Patents.scc.gra & 3774768 & 21 & 16 & 19 & 14 & 21 & 16 & 15 & 20 & 20\\
+go\_uniprot.gra & 6967956 & 12 & 8 & 12 & 7 & 14 & 9 & 7 & 14 & 12\\
+citeseer.scc.gra & 693947 & 5 & 2 & 5 & 4 & 6 & 2 & 4 & 5 & 5\\
+citeseerx.gra & 6540401 & 21 & 15 & 21 & 13 & 21 & 14 & 13 & 21 & 20\\
+\end{tabular}
+\caption{Number of colors on different graphs using different algorithms}
+\end{table}
