@@ -6,11 +6,226 @@
 #include <iomanip>
 #include <experimental/filesystem>
 #include <map>
+#include "windows.h"
+#include "psapi.h"
 namespace fs = std::experimental::filesystem;
 
 /* Usata per i diversi path e per specificare il processore*/
 #define ANDRE
 //#define GIO
+
+using namespace std;
+
+
+int main1() {
+	graph myGraph = graph();
+
+	clock_t start, end;
+	double time_not_parallel;
+	string name;
+	int color_parallel;
+	double time, score;
+	map<int, double> graphs_best_parameters;
+	double /*min_time=0,*/ curr_time;
+	//int best_coef, best_n_thread;
+	double min = 9999999;
+	int mini = 0, minj = 0;
+	string graph_sample, graph_sample_path;
+	vector<int> N_threads = { 2, 3, 5, 8, 12, 20 }; //!!!!!Here probably better to use numbers rwelative to max_threads and thus relative to machine on which program running so that program sort of fine tunes itself deopending on pc features
+	vector<int> coefs = { 1, 5, 10, 100 };
+	int coef = 10, n_threads = 8;
+	int output_width = 50, i, j;
+
+	myGraph.readFileDIMACS("../../../../benchmark/rgg/rgg_n_2_24_s0.graph");
+
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+	K32GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+	SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
+	SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
+
+	cout << "Virtual memory used: " << virtualMemUsedByMe << endl;
+	cout << "Physical memory used: " << physMemUsedByMe << endl;
+
+
+	cout << "Graph: " << graph_sample << endl;
+
+	/*Greedy Sequential*/
+	start = clock();
+	myGraph.GreedySequential();
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+	cout << endl;
+	name = "Greedy Sequential Coloring";
+	cout << setw(output_width) << name << " :";
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+
+	myGraph.cancelColors();
+
+	/*Largest Degree First Standard*/
+	start = clock();
+	myGraph.LargestDegreeFirstStandard(n_threads, coef);
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+	name = "Largest Degree First standard";
+	cout << setw(output_width) << name << " :";
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	/*Largest Degree First with one function to find and color nodes*/
+	start = clock();
+	myGraph.LargestDegreeFirstFindAndColor(n_threads, coef);
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+	name = "Largest Degree First (find and color)";
+	cout << setw(output_width) << name << " :";
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	start = clock();
+	myGraph.SmallestDegreeLastSequential();
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+	name = "Smallest Degree Last (sequential)";
+	cout << setw(output_width) << name << " :";
+
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	/*Smallest Degree Last*/
+	start = clock();
+	myGraph.SmallestDegreeLastStandard(n_threads, coef);
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+
+	name = "Smallest Degree Last (sequential weighing)";
+	cout << setw(output_width) << name << " :";
+
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	/*Jones Plassman sequential*/
+
+	start = clock();
+	myGraph.JonesPlassmanColoringSequential();
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+	name = "Jones - Plassman(sequential)";
+	cout << setw(output_width) << name << " :";
+
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	/*Jones Plassman standard with threadpool*/
+
+	start = clock();
+	myGraph.JonesPlassmanColoringParallelStandard(n_threads, coef);
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+	name = "Jones - Plassman standard(with threadpool)";
+	cout << setw(output_width) << name << " :";
+
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	/*Jones Plassman standard without threadpool*/
+
+	start = clock();
+	myGraph.JonesPlassmanColoringParallelBarriers(n_threads, coef);
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+	name = "Jones-Plassman standard (without threadpool)";
+	cout << setw(output_width) << name << " :";
+
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+	myGraph.cancelColors();
+
+	/*Jones Plassman with threadpool and find and color in the same function*/
+	start = clock();
+	myGraph.JonesPlassmanColoringParallelFindAndColor(n_threads, coef);
+	end = clock();
+
+	color_parallel = myGraph.checkColoringCSR();
+
+
+	name = "Jones-Plassman standard (find and color): ";
+	cout << setw(output_width) << name << " :";
+
+	if (color_parallel != -1) {
+		time = double(end - start) / double(CLOCKS_PER_SEC);
+		cout << "Time (sec): " << time << " \tColors: " << color_parallel << endl;
+	}
+	else
+		cout << "Coloring is wrong!" << endl;
+
+
+	system("pause");
+	return 0;
+
+}
+
 
 int main() {
 
@@ -34,7 +249,7 @@ int main() {
 #elif defined(ANDRE)
 	string path1= "../../../../benchmark/parameter_tuning", path2= "../../../../benchmark";
 #endif
-	ofstream myfile;
+	ofstream myfile, memory_file;
 
 	//sistema con matrice in cui per ogni n_thread e coef value salviamo la somma dei tempi per poi trovare la combinazione di parametri con somma minore. Un modo
 	// "più pulito" sarebbe semplicemente spostare il for più esterno (itera sui grafi) come più interno, ma questo comporterebbe ricaricare ogni volta i grafi
@@ -48,7 +263,7 @@ int main() {
 			best_res_mat[i].push_back(0.0);
 	}
 
-	myfile.open("../../../results.csv", std::ofstream::trunc);
+	/*myfile.open("../../../results.csv", std::ofstream::trunc);
 
 	for (auto& p : fs::recursive_directory_iterator(path1)) {
 
@@ -77,7 +292,7 @@ int main() {
 					curr_time = best_res_mat[i][j];
 
 					/*Largest Degree First Standard*/
-					start = clock();
+	/*				start = clock();
 					myGraph.LargestDegreeFirstStandard(n_threads, coef);
 					end = clock();
 
@@ -98,7 +313,7 @@ int main() {
 
 
 					/*Smallest Degree Last*/
-					start = clock();
+	/*				start = clock();
 					myGraph.SmallestDegreeLastStandard(n_threads, coef);
 					end = clock();
 
@@ -122,7 +337,7 @@ int main() {
 
 					/*Jones Plassman standard with threadpool*/
 
-					start = clock();
+	/*				start = clock();
 					myGraph.JonesPlassmanColoringParallelStandard(n_threads, coef);
 					end = clock();
 
@@ -147,10 +362,10 @@ int main() {
 				}
 			}
 		}
-	}
+	}*/
 
 	//find best hyperparameters
-	for (i = 0; i < N_threads.size(); i++){
+	/*for (i = 0; i < N_threads.size(); i++){
 		for (j = 0; j < coefs.size(); j++){
 			if (min > best_res_mat[i][j]) {
 				min = best_res_mat[i][j];
@@ -162,6 +377,7 @@ int main() {
 
 	n_threads = N_threads[mini];
 	coef = coefs[minj];
+	
 
 	if (n_threads > 20 || coef > 100) {
 		cout << "not working" << endl;
@@ -179,6 +395,11 @@ int main() {
 #endif
 
 	myfile.close();
+	*/
+
+
+	n_threads = 8;
+	coef = 10;
 
 
 	/*
@@ -186,6 +407,7 @@ int main() {
 	 */
 
 	myfile.open("../../../results_best.csv", std::ofstream::trunc);
+	memory_file.open("../../../memory.csv", std::ofstream::trunc);
 
 	for (auto& p : fs::recursive_directory_iterator(path2)) {
 
@@ -202,6 +424,16 @@ int main() {
 				myGraph.readFileDIMACS10(graph_sample_path);
 			else
 				myGraph.readFileDIMACS(graph_sample_path);
+
+			
+			PROCESS_MEMORY_COUNTERS_EX pmc;
+			K32GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+			SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
+			SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
+			
+			cout << "Virtual memory used: " << virtualMemUsedByMe << endl;
+			cout << "Physical memory used: " << physMemUsedByMe << endl;
+			memory_file << graph_sample << "," << myGraph.getNNodes() << "," << virtualMemUsedByMe << "," << physMemUsedByMe << endl;
 
 
 			cout << "Graph: " << graph_sample << endl;
@@ -398,6 +630,7 @@ int main() {
 #endif
 
 	myfile.close();
+	memory_file.close();
 
 	system("pause");
 	return 0;

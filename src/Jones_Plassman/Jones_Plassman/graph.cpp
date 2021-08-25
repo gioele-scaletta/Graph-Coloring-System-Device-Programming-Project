@@ -33,6 +33,8 @@ void graph::readFileDIMACS(string fileName)
 	this->_colors.clear();
 	this->_weights.clear();
 	this->_tmp_degree.clear();
+	this->_new_colors.clear();
+	this->_new_weights.clear();
 	ifstream fs(fileName);
 	string line;
 	if (fs.is_open()) {
@@ -87,6 +89,8 @@ void graph::readFileDIMACS10(string fileName)
 	this->_colors.clear();
 	this->_weights.clear();
 	this->_tmp_degree.clear();
+	this->_new_colors.clear();
+	this->_new_weights.clear();
 	ifstream fs(fileName);
 	string line;
 	if (fs.is_open()) {
