@@ -115,19 +115,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="edge.cpp" />
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="node.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="edge.h" />
     <ClInclude Include="graph.h" />
-    <ClInclude Include="node.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Jones_Plassman.rc" />
+    <ResourceCompile Include="Graph_Coloring.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\benchmark\manual\v100.gra" />
