@@ -1,7 +1,7 @@
 
 ***********************************************
 * System and Device Programming
-* 3rd September, 2021
+* September 3rd, 2021
 * 
 * PARALLEL GRAPH COLORING
 *
@@ -47,7 +47,11 @@ in two sections:
 The results for both sections are stored in .csv files which are then analyzed
 using Python scripts.
 	
-	
+
+MORE INFORMATION
+
+Further information about the implemented algorithms, the data structure used
+and the parallelization methods is reported in the report.
 	
 	
 	
