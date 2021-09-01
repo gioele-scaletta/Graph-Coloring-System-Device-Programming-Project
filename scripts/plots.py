@@ -27,7 +27,7 @@ if __name__ == "__main__":
     times = []
     colors = []
 
-    with open('results.csv', 'r') as csv_file:
+    with open('../results/results.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter = ',')
         for row in csv_reader:
             if len(row) == 7:
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     plt.xlabel("Number of threads")
     plt.ylabel("Time")
     plt.legend(algorithms_names_ids.keys())
-    plt.savefig("Images/times_threads")
+    plt.savefig("../images/times_threads")
     #plt.show()
 
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     plt.xlabel("Number of threads")
     plt.ylabel("Number of colors")
     plt.legend(algorithms_names_ids.keys())
-    plt.savefig("Images/colors_threads")
+    plt.savefig("../images/colors_threads")
     #plt.show()
 
 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     plt.ylabel("Time")
     plt.xscale("log")
     plt.legend(algorithms_names_ids.keys())
-    plt.savefig("Images/times_coefs")
+    plt.savefig("../images/times_coefs")
     #plt.show()
 
 
@@ -164,5 +164,5 @@ if __name__ == "__main__":
     plt.ylabel("Number of colors")
     plt.xscale("log")
     plt.legend(algorithms_names_ids.keys())
-    plt.savefig("Images/colors_coefs")
+    plt.savefig("../images/colors_coefs")
     #plt.show()

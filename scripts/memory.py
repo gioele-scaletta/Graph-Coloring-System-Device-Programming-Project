@@ -15,7 +15,7 @@ if __name__ == "__main__":
     vm = []
     pm = []
     
-    with open('memory.csv', 'r') as csv_file:
+    with open('../results/memory.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter = ',')
         for row in csv_reader:
             graph_nodes.append(int(row[1]))
@@ -40,6 +40,6 @@ if __name__ == "__main__":
     plt.ylabel("Memory (B)")
     plt.legend(["Virtual Memory", "Physical Memory"])
     plt.xscale("log")
-    plt.savefig("Images/memory")
+    plt.savefig("../images/memory")
     #plt.show()
 

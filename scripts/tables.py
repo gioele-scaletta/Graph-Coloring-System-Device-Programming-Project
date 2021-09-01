@@ -17,6 +17,12 @@ alg_names_brief = {
 
 def data_to_plot(n_nodes_np, alg_names_np, alg_name, to_plot):
     
+    ####
+    # Group graphs by their number of nodes (using powers of 10, e.g.
+    # 10-100-1000... nodes), and average the time/number of colors
+    # for each value of number of nodes
+    ####
+
     n_nodes = n_nodes_np[alg_names_np == alg_name]
     times = to_plot[alg_names_np == alg_name]
     log_nodes = np.linspace(int(min(np.ceil(np.log10(n_nodes)))), int(max(np.ceil(np.log10(n_nodes)))), 
@@ -42,8 +48,8 @@ if __name__ == "__main__":
     best_n_threads = 8
     best_coef = 10
 
-    with open("table_script.txt", "w") as fw:
-        with open("results_best.csv", "r") as fr:
+    with open("../results/table_script.txt", "w") as fw:
+        with open("../results/results_best.csv", "r") as fr:
 
             graph_names = []
             n_nodes = []
@@ -179,7 +185,7 @@ if __name__ == "__main__":
     plt.ylabel("Time (sec)")
     plt.xlabel("Number of nodes")
     plt.legend(["Greedy", "JP", "LDF", "SDL"])
-    plt.savefig("Images/times_nodes")
+    plt.savefig("../images/times_nodes")
     #plt.show()
 
 
@@ -203,7 +209,7 @@ if __name__ == "__main__":
     plt.ylabel("Number of colors")
     plt.xlabel("Number of nodes")
     plt.legend(["Greedy", "JP", "LDF", "SDL"])
-    plt.savefig("Images/colors_nodes")
+    plt.savefig("../images/colors_nodes")
     #plt.show()
     
     ###
@@ -224,7 +230,7 @@ if __name__ == "__main__":
     plt.ylabel("Time (sec)")
     plt.xlabel("Number of nodes")
     plt.legend(["JP - parallel", "SDL - parallel", "JP - sequential", "SDL - sequential"])
-    plt.savefig("Images/times_nodes_par_seq")
+    plt.savefig("../images/times_nodes_par_seq")
     #plt.show()
     
 
@@ -246,7 +252,7 @@ if __name__ == "__main__":
     plt.ylabel("Time (sec)")
     plt.xlabel("Number of nodes")
     plt.legend(["JP - standard", "SDL - standard", "JP - find and color", "SDL - find and color"])
-    plt.savefig("Images/times_nodes_std_findandcolor")
+    plt.savefig("../images/times_nodes_std_findandcolor")
     #plt.show()
     
 
@@ -266,5 +272,5 @@ if __name__ == "__main__":
     plt.ylabel("Time (sec)")
     plt.xlabel("Number of nodes")
     plt.legend(["JP - sequential", "JP - no threadpool", "JP - threadpool"])
-    plt.savefig("Images/times_nodes_threadpool")
+    plt.savefig("../images/times_nodes_threadpool")
     #plt.show()

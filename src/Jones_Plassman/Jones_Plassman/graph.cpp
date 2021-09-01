@@ -263,7 +263,6 @@ void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int c
 
 	vector<thread> Pool;
 	_terminate_pool = false;
-	int _total_colored_nodes = 0;
 	int nodes_to_color;
 	int nodes_to_color_per_thread;
 

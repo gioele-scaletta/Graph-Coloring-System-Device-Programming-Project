@@ -15,21 +15,22 @@ STRUCTURE OF THE PROJECT
 The project is composed of several parts:
 
 - 	the main program, contained in the folder "src", is a C++ program created with
-	Visual Studio on Windows. To open the entire solution, it is enough to click on 
-	the .sln file. The program can be compiled, run and debugged using the Visual 
+	Visual Studio 2017 on Windows. To open the entire solution, it is enough to click 
+	on the .sln file. The program can be compiled, run and debugged using the Visual 
 	Studio environment. 
 	
--	the results of the simulations are stored in two .csv files ("results.csv" and 
-	"results_best.csv")
+-	the results of the simulations are stored in .csv files ("results.csv", 
+	"results_best.csv", "memory.csv") contained in the folder "results"
 	
-- 	3 Python scripts are used to analyze the data of the simulations. In particular:
+- 	the "scripts" folder contains 3 Python scripts that are used to analyze the data 
+	of the simulations. In particular:
 	- "memory.py" plots data about memory usage
 	- "plots.py" plots results of performances vs number of threads and other parameters
 	- "tables.py" creates two tables in LaTeX containing the times and the colors for
 	each algorithm on many graphs and it creates some plots to summarize the performances
 	of the different algorithms
 	
-- 	plots are stored in the "Images" folder
+- 	plots are stored in the "images" folder
 
 - 	some references are reported in the "references" folder
 

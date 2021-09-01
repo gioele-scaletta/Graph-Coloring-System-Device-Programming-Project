@@ -112,16 +112,13 @@ private:
 	void findAndColorNodes(int from, int to);
 
 private:
-	mutex _mtx, _qmtx, _mtx_colored, mutex_node_to_color, _mtx_weighted;
-	condition_variable _cv, _cv_colored;
-	int _n_jobs1, _k, _i, _n_jobs2, _n_threads;
-	int _colored_nodes, _weighted_nodes;
+	/* Variables used for condition variables */
+	mutex _mtx, _qmtx;
+	condition_variable _cv /*for job queue management*/, _cv_colored /*for thread synchronization*/;
+	int _n_jobs1, _n_jobs2, _k, _i, _n_threads, _n_nodes;
 	queue<function<void()>> _q;
-	bool _terminate_pool;
-	shared_mutex _mtx_weights;
 	vector<int> _colors, _weights, _tmp_degree, _new_colors, _new_weights;
-	int _n_nodes;
-	bool _all_nodes_colored, _all_nodes_weighted, _increase_k;
+	bool _all_nodes_colored, _all_nodes_weighted, _increase_k, _terminate_pool;
 
 	/* one single array containing adjacencies for each node (one vector for each node) */
 	vector<vector<int>> _edges;

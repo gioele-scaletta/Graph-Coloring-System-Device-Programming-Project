@@ -48,7 +48,7 @@ int main() {
 			best_res_mat[i].push_back(0.0);
 	}
 
-	results_file.open("../../../results.csv", std::ofstream::trunc);
+	results_file.open("../../../results/results.csv", std::ofstream::trunc);
 
 	/* Load all graphs in the hyperparameter optimization set and run algorithms with different hyperparameters */
 	for (auto& p : fs::recursive_directory_iterator(path1)) {
@@ -185,8 +185,8 @@ int main() {
      * Run different algorithms on many graphs with best n_threads and coef
 	 */
 
-	results_file.open("../../../results_best.csv", std::ofstream::trunc);
-	memory_file.open("../../../memory.csv", std::ofstream::trunc);
+	results_file.open("../../../results/results_best.csv", std::ofstream::trunc);
+	memory_file.open("../../../results/memory.csv", std::ofstream::trunc);
 
 	// Load all graphs in the test set and run algorithms on them
 	for (auto& p : fs::recursive_directory_iterator(path2)) {
