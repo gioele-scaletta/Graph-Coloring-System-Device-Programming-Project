@@ -69,7 +69,7 @@ if __name__ == "__main__":
             alg_names_np = np.array(alg_names)
             times_np = np.array(times)
             colors_np = np.array(colors)
-    """
+    
             ##
             # Create table with results: TIME
             ##
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     plt.legend(["Greedy", "JP", "LDF", "SDL"])
     plt.savefig("Images/colors_nodes")
     #plt.show()
-    """
+    
     ###
     # Plot graph of time vs n_nodes for parallel vs sequential
     ###
@@ -247,4 +247,24 @@ if __name__ == "__main__":
     plt.xlabel("Number of nodes")
     plt.legend(["JP - standard", "SDL - standard", "JP - find and color", "SDL - find and color"])
     plt.savefig("Images/times_nodes_std_findandcolor")
+    #plt.show()
+    
+
+    ###
+    # Plot graph of time vs n_nodes for threadpool vs no threadpool
+    ###
+
+    log_nodes_JP0, avg_times_JP0 = data_to_plot(n_nodes_np, alg_names_np, "JP0", times_np)
+    log_nodes_JP1, avg_times_JP1 = data_to_plot(n_nodes_np, alg_names_np, "JP1", times_np)
+    log_nodes_JP2, avg_times_JP2 = data_to_plot(n_nodes_np, alg_names_np, "JP2", times_np)
+
+    plt.figure()
+    plt.plot(10 ** log_nodes_JP0, avg_times_JP0, '-o', color='r')
+    plt.plot(10 ** log_nodes_JP1, avg_times_JP1, '-o', color='b')
+    plt.plot(10 ** log_nodes_JP2, avg_times_JP2, '-o', color='g')
+    plt.xscale("log")
+    plt.ylabel("Time (sec)")
+    plt.xlabel("Number of nodes")
+    plt.legend(["JP - sequential", "JP - no threadpool", "JP - threadpool"])
+    plt.savefig("Images/times_nodes_threadpool")
     #plt.show()
