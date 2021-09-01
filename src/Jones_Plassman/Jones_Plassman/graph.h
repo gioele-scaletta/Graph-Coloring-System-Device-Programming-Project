@@ -1,6 +1,4 @@
 #pragma once
-#include "node.h"
-#include "edge.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -17,9 +15,9 @@ public:
 	graph();
 	~graph();
 
-	graph(const graph& toCopy); //non ho capito pervhè toglienmdolo non compila
-
+	graph(const graph& toCopy); 
 	
+	/* Read graphs from file */
 	void readFileDIMACS10(string fileName);
 	void readFileDIMACS(string fileName);
 
@@ -33,7 +31,7 @@ public:
 	 * Synchronization is done by means of condition variables (a thread is launched as soon as
 	 * one of the previous threads finishes)
 	 */
-	void JonesPlassmanColoringParallelBarriers(unsigned int maxThreads, int coef);
+	void JonesPlassmanColoringParallelNoThreadpool(unsigned int maxThreads, int coef);
 	/*
 	 * Standard Jones-Plassman algorithm implementation: no overlap between different iterations
 	 * can occur. Threads are synchronized after each iteration.
@@ -47,14 +45,15 @@ public:
 	 * places them in a local queue and it colors them after all nodes have been found
 	 */
 	void JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, int coef);
-	/*
-	 * LDF implementation where different iterations may overlap and jobs are
-	 * scheduled by the threads after executing them
-	 */
-	int checkColoringCSR();
+
+	/* Check if current coloring is correct */
+	int checkColoring();
+	/* Print current coloring */
 	void printColoring();
+	/* Cancel current coloring */
 	void cancelColors();
-	void infiniteLoopThreadRescheduleJob();
+	/* Thread function when using a threadpool (wait for jobs in the queue and check termination condition) */
+	void waitAndExecuteJobs();
 	/*
 	 * Standard implementation of the LDF algorithm. No overlap between different iterations.
 	 * A threadpool is created, jobs are scheduled by the main function and executed by threads,
@@ -75,12 +74,6 @@ public:
 	/*
 	 * Standard implementation of the Smallest Degree Last algorithm where different iterations
 	 * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
-	 * synchronized after each iteration. Weight assignment is parallelized.
-	 */
-	void SmallestDegreeLastParallelWeighing(unsigned int maxThreads, int coef);
-	/*
-	 * Standard implementation of the Smallest Degree Last algorithm where different iterations
-	 * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
 	 * synchronized after each iteration. Weight assignment is not parallelized.
 	 */
 	void SmallestDegreeLastStandard(unsigned int maxThreads, int coef);
@@ -93,26 +86,35 @@ public:
 
 private:
 	void assignRandomWeights();
-	void CalculateWeightsSDLParallel();
-	void weighNodes(int from, int to);
-	void findNodesToWeigh(int from, int to);
+	/* Check if node n has a weight equal to a neighbor */
 	bool weightConflict(int n);
+	/* Check if node n is local maximum */
 	int isLocalMaximum(int n);
-	int getMinColorCSR(int n, int min_color);
-	bool colorConflictCSR(int n);
+	/* Get minimum available color for node n given its colored neighbors */
+	int getMinColor(int n, int min_color);
+	/* Check if node n has the same color as one of its neighbors */
+	bool colorConflict(int n);
+	/* Find nodes that can be colored according to the algorithm in the given iteration 
+	  (i.e. they are not colored and they are local maxima). Used with a threadpool */
 	void findNodesToColor(int from, int to);
+	/* Find nodes that can be colored according to the algorithm in the given iteration
+      (i.e. they are not colored and they are local maxima). Used without threadpool */
 	void findNodesToColorSingleThread(int from, int to);
+	/* Color nodes that have been selected by findNodesToColor. Used with threadpool */
 	void ColorNodes(int from, int to);
+	/* Color nodes that have been selected by findNodesToColorSingleThread. Used without threadpool */
 	void ColorNodesSingleThread(int from, int to);
+	/* Assign degrees of nodes as weights */
 	void assignDegreeWeights();
+	/* Calculate weights for SDL algorithm */
 	void CalculateWeightsSDL();
+	/* Find nodes to color and then color them. Used for the find and color version of the algorithms */
 	void findAndColorNodes(int from, int to);
-	int isLocalMaximummod(int n);
 
 private:
 	mutex _mtx, _qmtx, _mtx_colored, mutex_node_to_color, _mtx_weighted;
 	condition_variable _cv, _cv_colored;
-	int _n_thread, _k, _i, _N_THREADS;
+	int _n_jobs1, _k, _i, _n_jobs2, _n_threads;
 	int _colored_nodes, _weighted_nodes;
 	queue<function<void()>> _q;
 	bool _terminate_pool;
@@ -121,7 +123,7 @@ private:
 	int _n_nodes;
 	bool _all_nodes_colored, _all_nodes_weighted, _increase_k;
 
-	/* Variation of CSR: one single array containing adjacencies for each node */
-	vector<vector<int>> _edgesCSR;
+	/* one single array containing adjacencies for each node (one vector for each node) */
+	vector<vector<int>> _edges;
 };
 

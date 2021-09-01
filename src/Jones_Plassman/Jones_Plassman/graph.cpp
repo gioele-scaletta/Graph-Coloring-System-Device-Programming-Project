@@ -20,16 +20,13 @@ graph::graph()
 {
 }
 
-
-
 graph::~graph()
 {
 }
 
-
 void graph::readFileDIMACS(string fileName)
 {
-	this->_edgesCSR.clear();
+	this->_edges.clear();
 	this->_colors.clear();
 	this->_weights.clear();
 	this->_tmp_degree.clear();
@@ -52,7 +49,7 @@ void graph::readFileDIMACS(string fileName)
 		}
 		cout << "Number of nodes: " << n_lines << " Number of edges: " << n_edges << endl;
 		this->_n_nodes = n_lines;
-		this->_edgesCSR.resize(n_lines);
+		this->_edges.resize(n_lines);
 		for (int i = 0; i < n_lines; i++) {
 			getline(fs, line);
 			stringstream ss;
@@ -71,8 +68,8 @@ void graph::readFileDIMACS(string fileName)
 				ss >> temp;
 				n2 = stoi(temp);
 				// Add edge in the edges vector (for both nodes -> treat each graph as indirect)
-				this->_edgesCSR[i].push_back(n2 - 1);
-				this->_edgesCSR[n2 - 1].push_back(i);
+				this->_edges[i].push_back(n2 - 1);
+				this->_edges[n2 - 1].push_back(i);
 			}
 		}
 		fs.close();
@@ -85,7 +82,7 @@ void graph::readFileDIMACS(string fileName)
 
 void graph::readFileDIMACS10(string fileName)
 {
-	this->_edgesCSR.clear();
+	this->_edges.clear();
 	this->_colors.clear();
 	this->_weights.clear();
 	this->_tmp_degree.clear();
@@ -106,7 +103,7 @@ void graph::readFileDIMACS10(string fileName)
 		}
 		cout << "Number of nodes: " << n_lines << endl;
 		this->_n_nodes = n_lines;
-		this->_edgesCSR.resize(n_lines);
+		this->_edges.resize(n_lines);
 		for (int i = 0; i < n_lines; i++) {
 			getline(fs, line);
 			stringstream ss;
@@ -129,8 +126,8 @@ void graph::readFileDIMACS10(string fileName)
 				if (temp != "#") {
 					n2 = stoi(temp);
 					// Add edge in the edges vector (for both nodes -> treat each graph as indirect)
-					this->_edgesCSR[n1].push_back(n2);
-					this->_edgesCSR[n2].push_back(n1);
+					this->_edges[n1].push_back(n2);
+					this->_edges[n2].push_back(n1);
 				}
 			} while (temp != "#");
 		}
@@ -145,11 +142,6 @@ void graph::readFileDIMACS10(string fileName)
 void graph::JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
-
-	// Check how many threads can be launched concurrently depending on the hardware setup
-	//const unsigned int maxThreads = std::thread::hardware_concurrency();
-	//const unsigned int maxThreads = 50;
-	//int n_thread = 0;
 	const int nodes_per_thread = floor(_n_nodes / (maxThreads )) + 1;
 
 	this->assignRandomWeights();
@@ -158,39 +150,47 @@ void graph::JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, i
 
 	_terminate_pool = false;
 
+	/* Create threads */
 	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
+		Pool.push_back(thread([this] {waitAndExecuteJobs(); }));
 	}
 
 	_all_nodes_colored = false;
 
+	/* Loop until all nodes are colored */
 	while (!_all_nodes_colored) {
 
+		/* _n_jobs2 will be used to synchronize threads after they have all found which nodes to color,
+			then _n_jobs1 will be used to synchronize them after they have all colored their nodes */
+		/* Determine how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_N_THREADS = _n_nodes / nodes_per_thread;
+				_n_jobs2 = _n_nodes / nodes_per_thread;
 			else
-				_N_THREADS = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs2 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_N_THREADS = _n_nodes;
+			_n_jobs2 = _n_nodes;
 
+		/* Determine how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 
 		_all_nodes_colored = true;
 
+		/* Divide the nodes into portions and schedule one job for each portion */
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
 
+			/* Schedule job */
 			{
 				function<void()> newJob = [this, from, to] {findAndColorNodes(from, to); };
 				unique_lock<mutex> lck(_qmtx);
@@ -198,17 +198,20 @@ void graph::JonesPlassmanColoringParallelFindAndColor(unsigned int maxThreads, i
 			}
 			_cv.notify_one();
 		}
+		/* Wait for termination of the jobs */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 	}
+	/* Set termination condition to true to make threads terminate */
 	{
 		lock_guard<mutex> lck(_qmtx);
 		_terminate_pool = true;
 	}
 	_cv.notify_all();
 
+	/* Join all threads */
 	for (thread &t : Pool)
 		t.join();
 	Pool.clear();
@@ -231,7 +234,7 @@ void graph::JonesPlassmanColoringSequential()
 			if (_colors[i] == -1) {
 				int min_color = isLocalMaximum(i);
 				if (min_color != -1) {
-					int new_color = getMinColorCSR(i, min_color);
+					int new_color = getMinColor(i, min_color);
 					_new_colors[i] = new_color;
 				}
 			}
@@ -264,30 +267,31 @@ void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int c
 	int nodes_to_color;
 	int nodes_to_color_per_thread;
 
+	/* Create threads */
 	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
+		Pool.push_back(thread([this] {waitAndExecuteJobs(); }));
 	}
 
 	_all_nodes_colored = false;
 
 	while (!_all_nodes_colored) {
-		//_nodes_to_color.clear();
-		//_colored_nodes = 0;
 
+		/* Calculate how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
 
+			/* Schedule jobs to find nodes to color */
 			{
 				function<void()> newJob = [this, from, to] {findNodesToColor(from, to); };
 				unique_lock<mutex> lck(_qmtx);
@@ -296,20 +300,21 @@ void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int c
 			}
 			_cv.notify_one();
 		}
-
+		/* Wait for termination of jobs */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 		
+		/* Calculate how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 
 		_all_nodes_colored = true;
 
@@ -317,7 +322,7 @@ void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int c
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
-
+			/* Schedule jobs to color the previously selected nodes */
 			{
 				function<void()> newJob = [this, from , to] {ColorNodes(from, to);};
 
@@ -326,18 +331,20 @@ void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int c
 			}
 			_cv.notify_one();
 		}
-
+		/* Wait for termination of jobs */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 	}
+	/* Set termination condition to make threads terminate */
 	{
 		lock_guard<mutex> lck(_qmtx);
 		_terminate_pool = true;
 	}
 	_cv.notify_all();
 
+	/* Join threads */
 	for (thread &t : Pool)
 		t.join();
 	Pool.clear();
@@ -352,39 +359,38 @@ void graph::JonesPlassmanColoringParallelStandard(unsigned int maxThreads, int c
 void graph::LargestDegreeFirstStandard(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
-
 	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) +1;
 
 	this->assignDegreeWeights();
 
 	vector<thread> Pool;
-
 	_terminate_pool = false;
-	int _total_colored_nodes = 0;
 
+	/* Create threads */
 	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
+		Pool.push_back(thread([this] {waitAndExecuteJobs(); }));
 	}
 
 	_all_nodes_colored = false;
 
 	while (!_all_nodes_colored) {
 
+		/* Determine how many jobs are scheduled (to wait for them) */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
 
-
+			/* Schedule jobs to find nodes to color */
 			{
 				function<void()> newJob = [this, from, to] {findNodesToColor(from, to); };
 				unique_lock<mutex> lck(_qmtx);
@@ -392,19 +398,21 @@ void graph::LargestDegreeFirstStandard(unsigned int maxThreads, int coef)
 			}
 			_cv.notify_one();
 		}
+		/* Wait for jobs termination */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 
+		/* Determine how many jobs are scheduled (to wait for them) */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 		_all_nodes_colored = true;
 
 
@@ -412,6 +420,7 @@ void graph::LargestDegreeFirstStandard(unsigned int maxThreads, int coef)
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
+			/* Schedule jobs to color previously selected nodes */
 			{
 				function<void()> newJob = [this, from, to] {ColorNodes(from, to); };
 
@@ -421,11 +430,13 @@ void graph::LargestDegreeFirstStandard(unsigned int maxThreads, int coef)
 			}
 			_cv.notify_one();
 		}
+		/* Wait for jobs termination */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 	}
+	/* Set termination condition to terminate threads */
 	{
 		lock_guard<mutex> lck(_qmtx);
 		_terminate_pool = true;
@@ -449,47 +460,50 @@ void graph::LargestDegreeFirstFindAndColor(unsigned int maxThreads, int coef)
 {
 	while (!this->_q.empty()) _q.pop();
 
-	//int n_thread = 0;
 	const int nodes_per_thread = floor(_n_nodes / (maxThreads )) + 1;
 
 	this->assignDegreeWeights();
 
 	vector<thread> Pool;
-
 	_terminate_pool = false;
 
+	/* Create threads */
 	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
+		Pool.push_back(thread([this] {waitAndExecuteJobs(); }));
 	}
 
 	_all_nodes_colored = false;
 
 	while (!_all_nodes_colored) {
-
+		
+		/* _n_jobs2 will be used to synchronize threads after they have all found which nodes to color,
+		then _n_jobs1 will be used to synchronize them after they have all colored their nodes */
+		/* Determine how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_N_THREADS = _n_nodes / nodes_per_thread;
+				_n_jobs2 = _n_nodes / nodes_per_thread;
 			else
-				_N_THREADS = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs2 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_N_THREADS = _n_nodes;
+			_n_jobs2 = _n_nodes;
 
+		/* Determine how many jobs are scheduled (to wait for them) */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 		_all_nodes_colored = true;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
-
+			/* Schedule jobs */
 			{
 				function<void()> newJob = [this, from, to] {findAndColorNodes(from, to); };
 				unique_lock<mutex> lck(_qmtx);
@@ -497,11 +511,13 @@ void graph::LargestDegreeFirstFindAndColor(unsigned int maxThreads, int coef)
 			}
 			_cv.notify_one();
 		}
+		/* Wait for jobs termination */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 	}
+	/* Set termination condition for threads */
 	{
 		lock_guard<mutex> lck(_qmtx);
 		_terminate_pool = true;
@@ -527,7 +543,7 @@ void graph::SmallestDegreeLastSequential()
 			if (_colors[n] == -1) {
 				min_color = isLocalMaximum(n);
 				if (min_color != -1) {
-					_colors[n] = getMinColorCSR(n, min_color);
+					_colors[n] = getMinColor(n, min_color);
 					colored_nodes++;
 				}
 			}
@@ -535,102 +551,6 @@ void graph::SmallestDegreeLastSequential()
 	}
 }
 
-
-
-/*
- * Standard implementation of the Smallest Degree Last algorithm where different iterations
- * do not overlap. Jobs are scheduled by the main function and executed by threads, which are
- * synchronized after each iteration. Weight assignment is parallelized.
- */
-void graph::SmallestDegreeLastParallelWeighing(unsigned int maxThreads, int coef)
-{
-	while (!this->_q.empty()) _q.pop();
-
-	const int nodes_per_thread = floor(_n_nodes / (maxThreads * coef)) + 1;
-
-	this->CalculateWeightsSDLParallel();
-	// Solve conflicts
-	for (int i = 0; i < _n_nodes; i++)
-		while (weightConflict(i))
-			_weights[i] = rand() % (_weights[i] * 2) + 1;
-	
-	vector<thread> Pool;
-
-	_terminate_pool = false;
-
-	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
-	}
-
-	_all_nodes_colored = false;
-
-	while (!_all_nodes_colored) {
-
-		if (nodes_per_thread != 1) {
-			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
-			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
-		}
-		else
-			_n_thread = _n_nodes;
-
-		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
-			int to = from + nodes_per_thread;
-			if (to > _n_nodes)
-				to = _n_nodes;
-			{
-				function<void()> newJob = [this, from, to] {findNodesToColor(from, to); };
-				unique_lock<mutex> lck(_qmtx);
-				_q.push(newJob);
-			}
-			_cv.notify_one();
-		}
-		{
-			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
-		}
-
-		if (nodes_per_thread != 1) {
-			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
-			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
-		}
-		else
-			_n_thread = _n_nodes;
-
-		_all_nodes_colored = true;
-
-		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
-			int to = from + nodes_per_thread;
-			if (to > _n_nodes)
-				to = _n_nodes;
-
-			{
-				function<void()> newJob = [this, from, to] {ColorNodes(from, to); };
-
-				unique_lock<mutex> lck(_qmtx);
-				_q.push(newJob);
-
-			}
-			_cv.notify_one();
-		}
-		{
-			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
-		}
-	}
-	{
-		lock_guard<mutex> lck(_qmtx);
-		_terminate_pool = true;
-	}
-	_cv.notify_all();
-
-	for (thread &t : Pool)
-		t.join();
-	Pool.clear();
-}
 
 
 /*
@@ -648,27 +568,30 @@ void graph::SmallestDegreeLastStandard(unsigned int maxThreads, int coef)
 
 	_terminate_pool = false;
 
+	/* Create threads */
 	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
+		Pool.push_back(thread([this] {waitAndExecuteJobs(); }));
 	}
 
 	_all_nodes_colored = false;
 
 	while (!_all_nodes_colored) {
 
+		/* Determine how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
+			/* Schedule jobs to find nodes to color */
 			{
 				function<void()> newJob = [this, from, to] {findNodesToColor(from, to); };
 				unique_lock<mutex> lck(_qmtx);
@@ -676,19 +599,21 @@ void graph::SmallestDegreeLastStandard(unsigned int maxThreads, int coef)
 			}
 			_cv.notify_one();
 		}
+		/* Wait for job termination */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 
+		/* Determine how many jobs are scheduled */
 		if (nodes_per_thread != 1) {
 			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
+				_n_jobs1 = _n_nodes / nodes_per_thread;
 			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
+				_n_jobs1 = ceil(_n_nodes / nodes_per_thread) + 1;
 		}
 		else
-			_n_thread = _n_nodes;
+			_n_jobs1 = _n_nodes;
 
 		_all_nodes_colored = true;
 
@@ -696,7 +621,7 @@ void graph::SmallestDegreeLastStandard(unsigned int maxThreads, int coef)
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
-
+			/* Schedule jobs to color previously selected nodes */
 			{
 				function<void()> newJob = [this, from, to] {ColorNodes(from, to); };
 
@@ -705,11 +630,13 @@ void graph::SmallestDegreeLastStandard(unsigned int maxThreads, int coef)
 			}
 			_cv.notify_one();
 		}
+		/* Wait for job termination */
 		{
 			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
+			_cv_colored.wait(lck, [this] {return _n_jobs1 == 0; });
 		}
 	}
+	/* Set termination condition for threads */
 	{
 		lock_guard<mutex> lck(_qmtx);
 		_terminate_pool = true;
@@ -734,7 +661,7 @@ void graph::GreedySequential()
 	// Iterate over nodes and assign the minimum available color
 	for (auto i : indices)
 	{
-		int color = this->getMinColorCSR(i, -1);
+		int color = this->getMinColor(i, -1);
 		this->_colors[i] = color;
 	}
 }
@@ -752,7 +679,7 @@ int graph::getNNodes()
  * Synchronization is done by means of condition variables (a thread is launched as soon as
  * one of the previous threads finishes)
  */
-void graph::JonesPlassmanColoringParallelBarriers(unsigned int maxThreads, int coef)
+void graph::JonesPlassmanColoringParallelNoThreadpool(unsigned int maxThreads, int coef)
 {
 	const int nodes_per_thread = ceil(_n_nodes / (coef * maxThreads)) + 1;
 	int colored_nodes = 0;
@@ -761,36 +688,33 @@ void graph::JonesPlassmanColoringParallelBarriers(unsigned int maxThreads, int c
 	start = clock();
 	// Assign a random weight to each node 
 	this->assignRandomWeights();
-	_n_thread = 0;
+	_n_threads = 0;
 	end = clock();
-	//cout << "Weighing took " << double(end - start) / CLOCKS_PER_SEC << endl;
-	//bool all_nodes_colored = false;
 	_all_nodes_colored = false;
 
 	while (!_all_nodes_colored) {
 
 		start = clock();
-		//_nodes_to_color.clear();
 
 		// FIRST LOOP: find nodes to color and place them in a vector
 		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
 			int to = from + nodes_per_thread;
 			if (to > _n_nodes)
 				to = _n_nodes;
-
+			/* Create threads */
 			thread t([this, from, to] {findNodesToColorSingleThread(from, to); });
 			t.detach();
 			{
 				lock_guard<mutex> lck(_mtx);
-				_n_thread++;
+				_n_jobs1++;
 			}
 			unique_lock<mutex> lck(_mtx);
-			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads; });
+			_cv.wait(lck, [this, maxThreads] {return _n_threads < maxThreads; });
 		}
 		{
 			// Wait for termination of remaining threads
 			unique_lock<mutex> lck(_mtx);
-			_cv.wait(lck, [this] {return _n_thread == 0; });
+			_cv.wait(lck, [this] {return _n_threads == 0; });
 		}			
 		end = clock();
 
@@ -807,25 +731,26 @@ void graph::JonesPlassmanColoringParallelBarriers(unsigned int maxThreads, int c
 			t.detach();
 			{
 				lock_guard<mutex> lck(_mtx);
-				_n_thread++;
+				_n_threads++;
 			}
 			unique_lock<mutex> lck(_mtx);
-			_cv.wait(lck, [this, maxThreads] {return _n_thread < maxThreads; });
+			_cv.wait(lck, [this, maxThreads] {return _n_threads < maxThreads; });
 		}
 		{
 			// Wait for termination of remaining threads
 			unique_lock<mutex> lck(_mtx);
-			_cv.wait(lck, [this] {return _n_thread == 0; });
+			_cv.wait(lck, [this] {return _n_threads == 0; });
 		}
 	}
 }
 
 
-void graph::infiniteLoopThreadRescheduleJob()
+void graph::waitAndExecuteJobs()
 {
 	function<void()> job;
 	while (true) {
 		{
+			/* Wait for a job or for the termination condition */
 			unique_lock<mutex> lck(_qmtx);
 			_cv.wait(lck, [this] {return !this->_q.empty() || this->_terminate_pool; });
 			if (this->_terminate_pool && this->_q.empty())
@@ -833,6 +758,7 @@ void graph::infiniteLoopThreadRescheduleJob()
 			job = this->_q.front();
 			this->_q.pop();
 		}
+		/* Execute job */
 		job();
 	}
 }
@@ -843,16 +769,16 @@ void graph::findNodesToColor(int from, int to)
 	for (int n_id = from; n_id < to; n_id++) {
 		
 		if (_colors[n_id] == -1) {
+			/* If the node is a local maximum, find the minimum available color for it */
 			int min_color = this->isLocalMaximum(n_id);
 			if (min_color != -1) {
-				_new_colors[n_id] = getMinColorCSR(n_id, min_color);
-				//_new_colors[n_id] = min_color;
+				_new_colors[n_id] = getMinColor(n_id, min_color);
 			}
 		}
 	}
 	{
 		lock_guard<mutex> lck(_mtx);
-		_n_thread--;
+		_n_jobs1--;
 		_cv_colored.notify_all();
 	}
 }
@@ -863,30 +789,31 @@ void graph::findNodesToColorSingleThread(int from, int to)
 	for (int n_id = from; n_id < to; n_id++) {
 
 		if (_colors[n_id] == -1) {
+			/* If the node is a local maximum, find the minimum available color for it 
+			   and save it the _new_colors vector so that the following jobs can color it */
 			int min_color = this->isLocalMaximum(n_id);
 			if (min_color != -1) {
-				//_new_colors[n_id] = min_color;
-				_new_colors[n_id] = getMinColorCSR(n_id, min_color);
+				_new_colors[n_id] = getMinColor(n_id, min_color);
 			}
 		}
 	}
 	lock_guard<mutex> lck(_mtx);
-	_n_thread--;
+	_n_threads--;
 	_cv.notify_all();
 }
 
 
 void graph::ColorNodesSingleThread(int from, int to)
 {
+	/* Color nodes found by previous functions */
 	for (int n_id = from; n_id < to; n_id++) {
-		//if (_new_colors[n_id] != -1 && _colors[n_id] == -1)
 		if (_new_colors[n_id] == -1)
 			_all_nodes_colored = false;
 		else
 			_colors[n_id] = _new_colors[n_id];
 	}
 	lock_guard<mutex> lck(_mtx);
-	_n_thread--;
+	_n_threads--;
 	_cv.notify_all();
 }
 
@@ -894,28 +821,27 @@ void graph::ColorNodesSingleThread(int from, int to)
 
 void graph::ColorNodes(int from, int to)
 {
+	/* Color nodes found by previous functions */
 	for (int n_id = from; n_id < to; n_id++) {
-		//if (_new_colors[n_id] != -1 && _colors[n_id] == -1)
 		if (_new_colors[n_id] == -1)
 			_all_nodes_colored = false;
 		else
 			_colors[n_id] = _new_colors[n_id];
 	}
 	lock_guard<mutex> lck(_mtx);
-	_n_thread--;
+	_n_jobs1--;
 	_cv_colored.notify_all();
 }
 
 
-int graph::checkColoringCSR()
+int graph::checkColoring()
 {
+	/* Check if coloring is correct (no neighboring nodes have the same color) */
 	int max_color = 0;
-	//printColoring();
 	for (int i = 0; i < _n_nodes; i++) {
-		if (this->colorConflictCSR(i))
+		if (this->colorConflict(i))
 			return -1;
 		if (this->_colors[i] >= max_color)
-			// add 1 because coloring starts from 0
 			max_color = this->_colors[i] + 1;
 	}
 	
@@ -945,6 +871,7 @@ void graph::assignRandomWeights()
 {
 	for (int i = 0; i < _weights.size(); i++) {
 		_weights[i] = rand();
+		// Avoid conflicts
 		while (weightConflict(i)) {
 			_weights[i] = rand() * (rand() % 100);
 		}
@@ -954,9 +881,9 @@ void graph::assignRandomWeights()
 void graph::assignDegreeWeights()
 {
 	for (int i = 0; i < _n_nodes; i++) {
-		_weights[i] = _edgesCSR[i].size(); // degree is size of adjacency vector
+		_weights[i] = _edges[i].size(); // degree is size of adjacency vector
 		while (weightConflict(i)) // in case of conflict, assign random weight (with 50% prob of being lower)
-			_weights[i] = rand() % (2 * _edgesCSR[i].size());
+			_weights[i] = rand() % (2 * _edges[i].size());
 	}
 }
 
@@ -969,7 +896,7 @@ void graph::CalculateWeightsSDL()
 
 	for (int n = 0; n < _n_nodes; n++) {
 		// set tmp degree to actual degree of the node
-		_tmp_degree[i] = _edgesCSR[i].size();
+		_tmp_degree[i] = _edges[i].size();
 	}
 
 	while (weighted_nodes < _n_nodes) {
@@ -987,7 +914,7 @@ void graph::CalculateWeightsSDL()
 				_weights[n] = rand() % (_weights[n] * 2) + 1;
 			weighted_nodes++;
 			// Decrease tmp degrees of neighboring nodes
-			for (int adj_node : _edgesCSR[n])
+			for (int adj_node : _edges[n])
 				if(_weights[adj_node] == -1)
 					_tmp_degree[adj_node]--;
 		}
@@ -1003,21 +930,21 @@ void graph::findAndColorNodes(int from, int to)
 		if (_colors[n_id] == -1) {
 			int min_color = this->isLocalMaximum(n_id);
 			if (min_color != -1) {
-				nodes_to_color.push(make_shared<pair<int, int>>(n_id, getMinColorCSR(n_id, min_color)));
-				//nodes_to_color.push(make_shared<pair<int, int>>(n_id, min_color)); //questo se usi il local max mod chge però per ora va peggio
+				/* Save nodes to color in a local queue */
+				nodes_to_color.push(make_shared<pair<int, int>>(n_id, getMinColor(n_id, min_color)));
 			}
 		}
 	}
 	{
 		lock_guard<mutex> lck(_mtx);
-		_N_THREADS--;
+		_n_jobs2--;
 		_cv_colored.notify_all();
 	}
 	{   // wait for all other threads to find nodes 
 		unique_lock<mutex> lck(_mtx);
-		_cv_colored.wait(lck, [this] {return _N_THREADS == 0;});
+		_cv_colored.wait(lck, [this] {return _n_jobs2 == 0;});
 	}
-	// Color the nodes 
+	// Color the nodes in the local queue
 	if (!nodes_to_color.empty())
 		_all_nodes_colored = false;
 	while (!nodes_to_color.empty()) {
@@ -1026,155 +953,10 @@ void graph::findAndColorNodes(int from, int to)
 	}
 	{
 		lock_guard<mutex> lck(_mtx);
-		_n_thread--;
+		_n_jobs1--;
 		_cv_colored.notify_all();
 	}
 }
-
-
-void graph::CalculateWeightsSDLParallel()
-{
-	int max_degree = _n_nodes;
-	vector<thread> Pool;
-	const unsigned int maxThreads = std::thread::hardware_concurrency();
-	const int nodes_per_thread = ceil(_n_nodes / maxThreads) + 1;
-	int count = 0;
-	_terminate_pool = false;
-	_k = 1;
-	_i = 1;
-
-	for (int i = 0; i < maxThreads; i++) {
-		Pool.push_back(thread([this] {infiniteLoopThreadRescheduleJob(); }));
-	}
-
-	for (int i = 0; i < _n_nodes; i++) {
-		_tmp_degree[i] = _edgesCSR[i].size();
-	}
-
-	_all_nodes_colored = false;
-
-	while (!_all_nodes_colored) {
-
-		if (nodes_per_thread != 1) {
-			if (_n_nodes % nodes_per_thread == 0)
-				_n_thread = _n_nodes / nodes_per_thread;
-			else
-				_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
-		}
-		else
-			_n_thread = _n_nodes;
-
-		_increase_k = true;
-
-		for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
-			int to = from + nodes_per_thread;
-			if (to > _n_nodes)
-				to = _n_nodes;
-			{
-				function<void()> newJob = [this, from, to] {findNodesToWeigh(from, to); };
-				unique_lock<mutex> lck(_qmtx);
-				_q.push(newJob);
-			}
-			_cv.notify_one();
-		}
-		{
-			unique_lock<mutex> lck(_mtx);
-			_cv_colored.wait(lck, [this] {return _n_thread == 0; });
-		}
-
-		if (_increase_k)
-			_k++;
-
-		else {
-
-			if (nodes_per_thread != 1) {
-				if (_n_nodes % nodes_per_thread == 0)
-					_n_thread = _n_nodes / nodes_per_thread;
-				else
-					_n_thread = ceil(_n_nodes / nodes_per_thread) + 1;
-			}
-			else
-				_n_thread = _n_nodes;
-			_all_nodes_colored = true;
-
-			for (int from = 0; from < _n_nodes; from += nodes_per_thread) {
-				int to = from + nodes_per_thread;
-				if (to > _n_nodes)
-					to = _n_nodes;
-
-				{
-					function<void()> newJob = [this, from, to] {weighNodes(from, to); };
-
-					unique_lock<mutex> lck(_qmtx);
-					_q.push(newJob);
-				}
-				_cv.notify_one();
-			}
-			{
-				unique_lock<mutex> lck(_mtx);
-				_cv_colored.wait(lck, [this] {return _n_thread == 0; });
-			}
-		}
-		_i++;
-	}
-	{
-		lock_guard<mutex> lck(_qmtx);
-		_terminate_pool = true;
-	}
-	_cv.notify_all();
-
-	for (thread &t : Pool)
-		t.join();
-	Pool.clear();
-}
-
-
-void graph::weighNodes(int from, int to) {
-
-	for (int n_id = from; n_id < to; n_id++) {
-		//int n = _to_weigh[n_id];
-		// Assign weight
-		if (_weights[n_id] == -1){
-			if (_new_weights[n_id] != -1) {
-				_weights[n_id] = _new_weights[n_id];
-				// Solve all conflicts at the end
-				{
-					unique_lock<shared_mutex> lck(_mtx_weights);
-					for (int adj_node : _edgesCSR[n_id])
-						if (_weights[adj_node] == -1)
-							_tmp_degree[adj_node]--;
-					//while (weightConflict(n_id))
-					//	_weights[n_id] = rand() % (2 * _weights[n_id]) + 1;
-				}
-			}
-			else
-				_all_nodes_colored = false;
-		}
-	}
-	{
-		lock_guard<mutex> lck(_mtx);
-		_n_thread--;
-		_cv_colored.notify_all();
-	}
-}
-
-
-void graph::findNodesToWeigh(int from, int to) {
-
-	for (int n_id = from; n_id < to; n_id++) {
-		
-		if (_weights[n_id] == -1 && _tmp_degree[n_id] <= _k ) {
-			_new_weights[n_id] = _i;
-			_increase_k = false;
-		}
-	}
-	{
-		lock_guard<mutex> lck(_mtx);
-		_n_thread--;
-		_cv_colored.notify_all();
-	}
-}
-
 
 bool graph::weightConflict(int n)
 {
@@ -1183,7 +965,7 @@ bool graph::weightConflict(int n)
 	if (cur_weight == -1)
 		return false;
 
-	for (auto i : _edgesCSR[n])
+	for (auto i : _edges[n])
 		if (_weights[i] == cur_weight)
 			return true;
 	
@@ -1199,9 +981,9 @@ int graph::isLocalMaximum(int n)
 	if (cur_weight == -1)
 		return false;
 
-	if (_edgesCSR[n].size() == 0)
+	if (_edges[n].size() == 0)
 		min_color = 0;
-	for (auto adj_node : _edgesCSR[n]) {
+	for (auto adj_node : _edges[n]) {
 		// Check if current adjacent node has bigger weight than original node
 		if (_colors[adj_node] == -1 && _weights[adj_node] >= cur_weight) {
 			return -1;
@@ -1213,46 +995,12 @@ int graph::isLocalMaximum(int n)
 	return min_color;
 }
 
-// a ragionamento mio dopvrebbe andare meglio ma va peggio
-int graph::isLocalMaximummod(int n)
-{
-	int cur_weight= _weights[n];
-	int i = -1;
-	int min_color = -1;
-	if (cur_weight == -1)
-		return false;
 
-	if (_edgesCSR[n].size() == 0)
-		min_color = 0;
-
-	unordered_set<int> usedcolors;
-
-	for (auto adj_node : _edgesCSR[n]) {
-		// Check if current adjacent node has bigger weight than original node
-		
-		if (_colors[adj_node] == -1 && _weights[adj_node] >= cur_weight) {
-			return -1;
-		}
-		
-		if (_colors[adj_node] != -1)
-			usedcolors.insert(_colors[adj_node]);
-	
-	}
-
-	while(true)
-		if (usedcolors.find(++i) == usedcolors.end())
-			return i;
-	
-
-	return min_color;
-}
-
-
-int graph::getMinColorCSR(int n, int min_color)
+int graph::getMinColor(int n, int min_color)
 {
 	/* TWO OPTIONS:
 	 * 1. Get min color as a parameter and use it to allocate vector
-	 * 2. Perform two iterations on neighboring nodes: the first one finds the highest color used,
+	 * 2. If min_color = -1, perform two iterations on neighboring nodes: the first one finds the highest color used,
 	 * the second one looks for the minimum available color using a vector that has as many cells
 	 * as the number of used colors
 	 */
@@ -1262,7 +1010,7 @@ int graph::getMinColorCSR(int n, int min_color)
 	
 	if (min_color == -1) {
 		// Iterate over all neighboring nodes to find minimum color
-		for (auto adj_node : _edgesCSR[n]) {
+		for (auto adj_node : _edges[n]) {
 			if (_colors[adj_node] >= min_color)
 				min_color = _colors[adj_node] + 1;
 		}
@@ -1273,7 +1021,7 @@ int graph::getMinColorCSR(int n, int min_color)
 		return 0;
 
 	vector<int> used_colors(min_color, 0);
-	for (auto adj_node : _edgesCSR[n]) {
+	for (auto adj_node : _edges[n]) {
 		if (_colors[adj_node] != -1)
 			used_colors[_colors[adj_node]] = 1;
 	}
@@ -1285,14 +1033,14 @@ int graph::getMinColorCSR(int n, int min_color)
 }
 
 
-bool graph::colorConflictCSR(int n)
+bool graph::colorConflict(int n)
 {
 	int cur_color = _colors.at(n);
 
 	if (cur_color == -1)
 		return true;
 
-	for (auto i : _edgesCSR[n]) {
+	for (auto i : _edges[n]) {
 		if (_colors[i] == cur_color) {
 			cout << "Problem with nodes: " << n << " and " << i << endl;
 			return true;

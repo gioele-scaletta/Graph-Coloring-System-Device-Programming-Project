@@ -69,7 +69,7 @@ if __name__ == "__main__":
             alg_names_np = np.array(alg_names)
             times_np = np.array(times)
             colors_np = np.array(colors)
-    
+    """
             ##
             # Create table with results: TIME
             ##
@@ -204,4 +204,47 @@ if __name__ == "__main__":
     plt.xlabel("Number of nodes")
     plt.legend(["Greedy", "JP", "LDF", "SDL"])
     plt.savefig("Images/colors_nodes")
+    #plt.show()
+    """
+    ###
+    # Plot graph of time vs n_nodes for parallel vs sequential
+    ###
+    
+    log_nodes_JP2, avg_times_JP2 = data_to_plot(n_nodes_np, alg_names_np, "JP2", times_np)
+    log_nodes_SDL1, avg_times_SDL1 = data_to_plot(n_nodes_np, alg_names_np, "SDL1", times_np)
+    log_nodes_JP0, avg_times_JP0 = data_to_plot(n_nodes_np, alg_names_np, "JP0", times_np)
+    log_nodes_SDL0, avg_times_SDL0 = data_to_plot(n_nodes_np, alg_names_np, "SDL0", times_np)
+
+    plt.figure()
+    plt.plot(10 ** log_nodes_JP2, avg_times_JP2, '-o', color='r')
+    plt.plot(10 ** log_nodes_SDL1, avg_times_SDL1, '-o', color='b')
+    plt.plot(10 ** log_nodes_JP0, avg_times_JP0, '--o', color='r')
+    plt.plot(10 ** log_nodes_SDL0, avg_times_SDL0, '--o', color='b')
+    plt.xscale("log")
+    plt.ylabel("Time (sec)")
+    plt.xlabel("Number of nodes")
+    plt.legend(["JP - parallel", "SDL - parallel", "JP - sequential", "SDL - sequential"])
+    plt.savefig("Images/times_nodes_par_seq")
+    #plt.show()
+    
+
+    ###
+    # Plot graph of time vs n_nodes for standard vs find and color
+    ###
+    
+    log_nodes_JP2, avg_times_JP2 = data_to_plot(n_nodes_np, alg_names_np, "JP2", times_np)
+    log_nodes_LDF1, avg_times_LDF1 = data_to_plot(n_nodes_np, alg_names_np, "LDF1", times_np)
+    log_nodes_JP3, avg_times_JP3 = data_to_plot(n_nodes_np, alg_names_np, "JP3", times_np)
+    log_nodes_LDF2, avg_times_LDF2 = data_to_plot(n_nodes_np, alg_names_np, "LDF2", times_np)
+
+    plt.figure()
+    plt.plot(10 ** log_nodes_JP2, avg_times_JP2, '-o', color='r')
+    plt.plot(10 ** log_nodes_LDF1, avg_times_LDF1, '-o', color='b')
+    plt.plot(10 ** log_nodes_JP3, avg_times_JP3, '--o', color='r')
+    plt.plot(10 ** log_nodes_LDF2, avg_times_LDF2, '--o', color='b')
+    plt.xscale("log")
+    plt.ylabel("Time (sec)")
+    plt.xlabel("Number of nodes")
+    plt.legend(["JP - standard", "SDL - standard", "JP - find and color", "SDL - find and color"])
+    plt.savefig("Images/times_nodes_std_findandcolor")
     #plt.show()
