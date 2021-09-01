@@ -117,8 +117,9 @@ private:
 	condition_variable _cv /*for job queue management*/, _cv_colored /*for thread synchronization*/;
 	int _n_jobs1, _n_jobs2, _k, _i, _n_threads, _n_nodes;
 	queue<function<void()>> _q;
-	vector<int> _colors, _weights, _tmp_degree, _new_colors, _new_weights;
 	bool _all_nodes_colored, _all_nodes_weighted, _increase_k, _terminate_pool;
+
+	vector<int> _colors, _weights, _tmp_degree, _new_colors, _new_weights;
 
 	/* one single array containing adjacencies for each node (one vector for each node) */
 	vector<vector<int>> _edges;
