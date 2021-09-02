@@ -17,7 +17,11 @@ The project is composed of several parts:
 - 	the main program, contained in the folder "src", is a C++ program created with
 	Visual Studio 2017 on Windows. To open the entire solution, it is enough to click 
 	on the .sln file. The program can be compiled, run and debugged using the Visual 
-	Studio environment. 
+	Studio environment. To allow the program to properly access files, all textual files 
+	containing the descriptions of the graphs for the first part (hyperparameter optimization)
+	should be located in a folder "benchmark/parameter_tuning", located in the same 
+	folder where the repository is located. All the other graphs for the second part can be 
+	located in the same "benchmark" folder or in subfolders.
 	
 -	the results of the simulations are stored in .csv files ("results.csv", 
 	"results_best.csv", "memory.csv") contained in the folder "results"
