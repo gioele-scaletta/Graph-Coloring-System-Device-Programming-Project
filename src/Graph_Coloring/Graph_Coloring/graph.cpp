@@ -705,7 +705,7 @@ void graph::JonesPlassmanColoringParallelNoThreadpool(unsigned int maxThreads, i
 			t.detach();
 			{
 				lock_guard<mutex> lck(_mtx);
-				_n_jobs1++;
+				_n_threads++;
 			}
 			unique_lock<mutex> lck(_mtx);
 			_cv.wait(lck, [this, maxThreads] {return _n_threads < maxThreads; });

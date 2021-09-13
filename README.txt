@@ -38,6 +38,8 @@ The project is composed of several parts:
 
 - 	some references are reported in the "references" folder
 
+-	the report and the slides for the project are also available
+
 
 STRUCTURE OF THE MAIN PROGRAM
 
