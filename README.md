@@ -13,7 +13,7 @@ Gioele Scaletta
 
 - [Complete report of the project](https://github.com/gioele-scaletta/Graph-Coloring-System-Device-Programming-Project/blob/main/SDP_Report.pdf)
 
-## STRUCTURE OF THE PROJECT
+### STRUCTURE OF THE PROJECT
 
 The project is composed of several parts:
 
@@ -44,7 +44,7 @@ The project is composed of several parts:
 -	the report and the slides for the project are also available
 
 
-STRUCTURE OF THE MAIN PROGRAM
+### STRUCTURE OF THE MAIN PROGRAM
 
 The main C++ program contains a "graph" class with all the variables and methods
 needed to read graphs from textual files, run different coloring algorithms and 
@@ -58,7 +58,7 @@ The results for both sections are stored in .csv files which are then analyzed
 using Python scripts.
 	
 
-MORE INFORMATION
+### MORE INFORMATION
 
 Further information about the implemented algorithms, the data structure used
 and the parallelization methods is reported in the report.
