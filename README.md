@@ -1,16 +1,16 @@
 
 ***********************************************
-* System and Device Programming
-* September 3rd, 2021
-* 
-* PARALLEL GRAPH COLORING
-*
-* Andrea Cavallo
-* Gioele Scaletta
+System and Device Programming
+September 3rd, 2021
+ 
+PARALLEL GRAPH COLORING
+
+Andrea Cavallo
+Gioele Scaletta
 ***********************************************
 
 
-STRUCTURE OF THE PROJECT
+## STRUCTURE OF THE PROJECT
 
 The project is composed of several parts:
 
