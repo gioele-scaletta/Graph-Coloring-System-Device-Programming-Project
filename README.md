@@ -9,9 +9,9 @@ Andrea Cavallo
 Gioele Scaletta
 ***********************************************
 
-- [slide presentation of the project](https://github.com/gioele-scaletta/Graph-Coloring-System-Device-Programming-Project/blob/SDP_project_presentation.pdf)
+- [slide presentation of the project](https://github.com/gioele-scaletta/Graph-Coloring-System-Device-Programming-Project/blob/main/SDP_Report.pdf)
 
-- [Complete report of the project](https://github.com/gioele-scaletta/Graph-Coloring-System-Device-Programming-Project/blob/SDP_Report.pdf)
+- [Complete report of the project](https://github.com/gioele-scaletta/Graph-Coloring-System-Device-Programming-Project/blob/main/SDP_Report.pdf)
 
 ## STRUCTURE OF THE PROJECT
 
