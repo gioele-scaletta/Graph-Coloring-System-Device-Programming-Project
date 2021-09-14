@@ -1,0 +1,460 @@
+cit-Patents.scc.gra,3774768,Greedy Sequential Coloring,1,1.768,19
+cit-Patents.scc.gra,3774768,Largest Degree First standard,8,8.902,15
+cit-Patents.scc.gra,3774768,Largest Degree First (find and color),8,10.338,14
+cit-Patents.scc.gra,3774768,Smallest Degree Last (sequential),1,6.447,15
+cit-Patents.scc.gra,3774768,Smallest Degree Last (sequential weighing),8,3.65,15
+cit-Patents.scc.gra,3774768,Jones - Plassman(sequential),1,14.379,21
+cit-Patents.scc.gra,3774768,Jones - Plassman standard(with threadpool),8,4.605,21
+cit-Patents.scc.gra,3774768,Jones-Plassman standard (without threadpool),8,7.06,21
+cit-Patents.scc.gra,3774768,Jones-Plassman standard (find and color): ,8,4.772,20
+citeseer.scc.gra,693947,Greedy Sequential Coloring,1,0.078,5
+citeseer.scc.gra,693947,Largest Degree First standard,8,0.042,4
+citeseer.scc.gra,693947,Largest Degree First (find and color),8,0.088,4
+citeseer.scc.gra,693947,Smallest Degree Last (sequential),1,0.122,2
+citeseer.scc.gra,693947,Smallest Degree Last (sequential weighing),8,0.084,2
+citeseer.scc.gra,693947,Jones - Plassman(sequential),1,0.129,5
+citeseer.scc.gra,693947,Jones - Plassman standard(with threadpool),8,0.064,5
+citeseer.scc.gra,693947,Jones-Plassman standard (without threadpool),8,0.276,5
+citeseer.scc.gra,693947,Jones-Plassman standard (find and color): ,8,0.115,6
+citeseerx.gra,6540401,Greedy Sequential Coloring,1,2.204,21
+citeseerx.gra,6540401,Largest Degree First standard,8,5.194,13
+citeseerx.gra,6540401,Largest Degree First (find and color),8,6.11,13
+citeseerx.gra,6540401,Smallest Degree Last (sequential),1,4.37,13
+citeseerx.gra,6540401,Smallest Degree Last (sequential weighing),8,2.387,14
+citeseerx.gra,6540401,Jones - Plassman(sequential),1,16.437,20
+citeseerx.gra,6540401,Jones - Plassman standard(with threadpool),8,5.069,20
+citeseerx.gra,6540401,Jones-Plassman standard (without threadpool),8,7.941,21
+citeseerx.gra,6540401,Jones-Plassman standard (find and color): ,8,6.123,21
+go_uniprot.gra,6967956,Greedy Sequential Coloring,1,2.701,12
+go_uniprot.gra,6967956,Largest Degree First standard,8,1.218,7
+go_uniprot.gra,6967956,Largest Degree First (find and color),8,1.66,7
+go_uniprot.gra,6967956,Smallest Degree Last (sequential),1,4.164,8
+go_uniprot.gra,6967956,Smallest Degree Last (sequential weighing),8,2.769,8
+go_uniprot.gra,6967956,Jones - Plassman(sequential),1,30.773,14
+go_uniprot.gra,6967956,Jones - Plassman standard(with threadpool),8,8.832,13
+go_uniprot.gra,6967956,Jones-Plassman standard (without threadpool),8,14.114,12
+go_uniprot.gra,6967956,Jones-Plassman standard (find and color): ,8,7.779,12
+uniprotenc_100m.scc.gra,16087295,Greedy Sequential Coloring,1,4.121,5
+uniprotenc_100m.scc.gra,16087295,Largest Degree First standard,8,1.165,3
+uniprotenc_100m.scc.gra,16087295,Largest Degree First (find and color),8,2.765,3
+uniprotenc_100m.scc.gra,16087295,Smallest Degree Last (sequential),1,3.386,2
+uniprotenc_100m.scc.gra,16087295,Smallest Degree Last (sequential weighing),8,2.039,2
+uniprotenc_100m.scc.gra,16087295,Jones - Plassman(sequential),1,4.24,5
+uniprotenc_100m.scc.gra,16087295,Jones - Plassman standard(with threadpool),8,1.594,5
+uniprotenc_100m.scc.gra,16087295,Jones-Plassman standard (without threadpool),8,2.288,5
+uniprotenc_100m.scc.gra,16087295,Jones-Plassman standard (find and color): ,8,3.303,5
+uniprotenc_22m.scc.gra,1595444,Greedy Sequential Coloring,1,0.351,4
+uniprotenc_22m.scc.gra,1595444,Largest Degree First standard,8,0.083,2
+uniprotenc_22m.scc.gra,1595444,Largest Degree First (find and color),8,0.186,3
+uniprotenc_22m.scc.gra,1595444,Smallest Degree Last (sequential),1,0.297,2
+uniprotenc_22m.scc.gra,1595444,Smallest Degree Last (sequential weighing),8,0.153,2
+uniprotenc_22m.scc.gra,1595444,Jones - Plassman(sequential),1,0.318,4
+uniprotenc_22m.scc.gra,1595444,Jones - Plassman standard(with threadpool),8,0.134,4
+uniprotenc_22m.scc.gra,1595444,Jones-Plassman standard (without threadpool),8,0.266,4
+uniprotenc_22m.scc.gra,1595444,Jones-Plassman standard (find and color): ,8,0.243,4
+cuda.gra,7,Greedy Sequential Coloring,1,0,2
+cuda.gra,7,Largest Degree First standard,8,0.002,2
+cuda.gra,7,Largest Degree First (find and color),8,0.002,2
+cuda.gra,7,Smallest Degree Last (sequential),1,0,2
+cuda.gra,7,Smallest Degree Last (sequential weighing),8,0.002,2
+cuda.gra,7,Jones - Plassman(sequential),1,0,2
+cuda.gra,7,Jones - Plassman standard(with threadpool),8,0.002,3
+cuda.gra,7,Jones-Plassman standard (without threadpool),8,0.005,2
+cuda.gra,7,Jones-Plassman standard (find and color): ,8,0.002,2
+v10.gra,10,Greedy Sequential Coloring,1,0,6
+v10.gra,10,Largest Degree First standard,8,0.002,6
+v10.gra,10,Largest Degree First (find and color),8,0.002,6
+v10.gra,10,Smallest Degree Last (sequential),1,0,6
+v10.gra,10,Smallest Degree Last (sequential weighing),8,0.004,6
+v10.gra,10,Jones - Plassman(sequential),1,0,6
+v10.gra,10,Jones - Plassman standard(with threadpool),8,0.003,6
+v10.gra,10,Jones-Plassman standard (without threadpool),8,0.023,6
+v10.gra,10,Jones-Plassman standard (find and color): ,8,0.003,6
+v100.gra,100,Greedy Sequential Coloring,1,0,78
+v100.gra,100,Largest Degree First standard,8,0.02,78
+v100.gra,100,Largest Degree First (find and color),8,0.012,78
+v100.gra,100,Smallest Degree Last (sequential),1,0.001,78
+v100.gra,100,Smallest Degree Last (sequential weighing),8,0.019,78
+v100.gra,100,Jones - Plassman(sequential),1,0,78
+v100.gra,100,Jones - Plassman standard(with threadpool),8,0.02,78
+v100.gra,100,Jones-Plassman standard (without threadpool),8,1.238,78
+v100.gra,100,Jones-Plassman standard (find and color): ,8,0.012,78
+v1000.gra,1000,Greedy Sequential Coloring,1,0.005,752
+v1000.gra,1000,Largest Degree First standard,8,0.247,751
+v1000.gra,1000,Largest Degree First (find and color),8,0.1,751
+v1000.gra,1000,Smallest Degree Last (sequential),1,0.086,751
+v1000.gra,1000,Smallest Degree Last (sequential weighing),8,0.276,751
+v1000.gra,1000,Jones - Plassman(sequential),1,0.032,752
+v1000.gra,1000,Jones - Plassman standard(with threadpool),8,0.252,751
+v1000.gra,1000,Jones-Plassman standard (without threadpool),8,19.499,751
+v1000.gra,1000,Jones-Plassman standard (find and color): ,8,0.101,751
+rgg_n_2_15_s0.graph,32768,Greedy Sequential Coloring,1,0.012,14
+rgg_n_2_15_s0.graph,32768,Largest Degree First standard,8,0.014,13
+rgg_n_2_15_s0.graph,32768,Largest Degree First (find and color),8,0.014,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential),1,0.034,13
+rgg_n_2_15_s0.graph,32768,Smallest Degree Last (sequential weighing),8,0.025,13
+rgg_n_2_15_s0.graph,32768,Jones - Plassman(sequential),1,0.024,14
+rgg_n_2_15_s0.graph,32768,Jones - Plassman standard(with threadpool),8,0.014,14
+rgg_n_2_15_s0.graph,32768,Jones-Plassman standard (without threadpool),8,0.541,15
+rgg_n_2_15_s0.graph,32768,Jones-Plassman standard (find and color): ,8,0.014,14
+rgg_n_2_16_s0.graph,65536,Greedy Sequential Coloring,1,0.023,17
+rgg_n_2_16_s0.graph,65536,Largest Degree First standard,8,0.025,15
+rgg_n_2_16_s0.graph,65536,Largest Degree First (find and color),8,0.027,15
+rgg_n_2_16_s0.graph,65536,Smallest Degree Last (sequential),1,0.072,16
+rgg_n_2_16_s0.graph,65536,Smallest Degree Last (sequential weighing),8,0.046,14
+rgg_n_2_16_s0.graph,65536,Jones - Plassman(sequential),1,0.056,17
+rgg_n_2_16_s0.graph,65536,Jones - Plassman standard(with threadpool),8,0.021,16
+rgg_n_2_16_s0.graph,65536,Jones-Plassman standard (without threadpool),8,0.655,17
+rgg_n_2_16_s0.graph,65536,Jones-Plassman standard (find and color): ,8,0.027,16
+rgg_n_2_17_s0.graph,131072,Greedy Sequential Coloring,1,0.056,16
+rgg_n_2_17_s0.graph,131072,Largest Degree First standard,8,0.042,15
+rgg_n_2_17_s0.graph,131072,Largest Degree First (find and color),8,0.049,15
+rgg_n_2_17_s0.graph,131072,Smallest Degree Last (sequential),1,0.154,15
+rgg_n_2_17_s0.graph,131072,Smallest Degree Last (sequential weighing),8,0.099,16
+rgg_n_2_17_s0.graph,131072,Jones - Plassman(sequential),1,0.125,16
+rgg_n_2_17_s0.graph,131072,Jones - Plassman standard(with threadpool),8,0.041,16
+rgg_n_2_17_s0.graph,131072,Jones-Plassman standard (without threadpool),8,0.712,16
+rgg_n_2_17_s0.graph,131072,Jones-Plassman standard (find and color): ,8,0.05,16
+rgg_n_2_18_s0.graph,262144,Greedy Sequential Coloring,1,0.12,17
+rgg_n_2_18_s0.graph,262144,Largest Degree First standard,8,0.084,16
+rgg_n_2_18_s0.graph,262144,Largest Degree First (find and color),8,0.104,16
+rgg_n_2_18_s0.graph,262144,Smallest Degree Last (sequential),1,0.313,17
+rgg_n_2_18_s0.graph,262144,Smallest Degree Last (sequential weighing),8,0.194,16
+rgg_n_2_18_s0.graph,262144,Jones - Plassman(sequential),1,0.281,18
+rgg_n_2_18_s0.graph,262144,Jones - Plassman standard(with threadpool),8,0.078,18
+rgg_n_2_18_s0.graph,262144,Jones-Plassman standard (without threadpool),8,0.741,17
+rgg_n_2_18_s0.graph,262144,Jones-Plassman standard (find and color): ,8,0.098,18
+rgg_n_2_19_s0.graph,524288,Greedy Sequential Coloring,1,0.257,19
+rgg_n_2_19_s0.graph,524288,Largest Degree First standard,8,0.182,18
+rgg_n_2_19_s0.graph,524288,Largest Degree First (find and color),8,0.219,18
+rgg_n_2_19_s0.graph,524288,Smallest Degree Last (sequential),1,0.677,18
+rgg_n_2_19_s0.graph,524288,Smallest Degree Last (sequential weighing),8,0.397,18
+rgg_n_2_19_s0.graph,524288,Jones - Plassman(sequential),1,0.586,18
+rgg_n_2_19_s0.graph,524288,Jones - Plassman standard(with threadpool),8,0.162,19
+rgg_n_2_19_s0.graph,524288,Jones-Plassman standard (without threadpool),8,0.862,19
+rgg_n_2_19_s0.graph,524288,Jones-Plassman standard (find and color): ,8,0.177,19
+rgg_n_2_20_s0.graph,1048576,Greedy Sequential Coloring,1,0.584,20
+rgg_n_2_20_s0.graph,1048576,Largest Degree First standard,8,0.4,18
+rgg_n_2_20_s0.graph,1048576,Largest Degree First (find and color),8,0.495,18
+rgg_n_2_20_s0.graph,1048576,Smallest Degree Last (sequential),1,1.382,19
+rgg_n_2_20_s0.graph,1048576,Smallest Degree Last (sequential weighing),8,0.853,18
+rgg_n_2_20_s0.graph,1048576,Jones - Plassman(sequential),1,1.262,19
+rgg_n_2_20_s0.graph,1048576,Jones - Plassman standard(with threadpool),8,0.365,20
+rgg_n_2_20_s0.graph,1048576,Jones-Plassman standard (without threadpool),8,1.074,19
+rgg_n_2_20_s0.graph,1048576,Jones-Plassman standard (find and color): ,8,0.466,20
+rgg_n_2_21_s0.graph,2097152,Greedy Sequential Coloring,1,1.371,20
+rgg_n_2_21_s0.graph,2097152,Largest Degree First standard,8,0.906,19
+rgg_n_2_21_s0.graph,2097152,Largest Degree First (find and color),8,1.115,19
+rgg_n_2_21_s0.graph,2097152,Smallest Degree Last (sequential),1,3.003,19
+rgg_n_2_21_s0.graph,2097152,Smallest Degree Last (sequential weighing),8,1.854,19
+rgg_n_2_21_s0.graph,2097152,Jones - Plassman(sequential),1,2.777,19
+rgg_n_2_21_s0.graph,2097152,Jones - Plassman standard(with threadpool),8,0.826,19
+rgg_n_2_21_s0.graph,2097152,Jones-Plassman standard (without threadpool),8,1.646,20
+rgg_n_2_21_s0.graph,2097152,Jones-Plassman standard (find and color): ,8,0.97,20
+rgg_n_2_22_s0.graph,4194304,Greedy Sequential Coloring,1,3.105,23
+rgg_n_2_22_s0.graph,4194304,Largest Degree First standard,8,2.042,20
+rgg_n_2_22_s0.graph,4194304,Largest Degree First (find and color),8,2.314,20
+rgg_n_2_22_s0.graph,4194304,Smallest Degree Last (sequential),1,6.257,20
+rgg_n_2_22_s0.graph,4194304,Smallest Degree Last (sequential weighing),8,3.951,20
+rgg_n_2_22_s0.graph,4194304,Jones - Plassman(sequential),1,5.921,22
+rgg_n_2_22_s0.graph,4194304,Jones - Plassman standard(with threadpool),8,1.821,21
+rgg_n_2_22_s0.graph,4194304,Jones-Plassman standard (without threadpool),8,2.711,21
+rgg_n_2_22_s0.graph,4194304,Jones-Plassman standard (find and color): ,8,2.091,21
+rgg_n_2_23_s0.graph,8388608,Greedy Sequential Coloring,1,6.574,21
+rgg_n_2_23_s0.graph,8388608,Largest Degree First standard,8,4.615,21
+rgg_n_2_23_s0.graph,8388608,Largest Degree First (find and color),8,5.212,21
+rgg_n_2_23_s0.graph,8388608,Smallest Degree Last (sequential),1,13.169,22
+rgg_n_2_23_s0.graph,8388608,Smallest Degree Last (sequential weighing),8,8.447,23
+rgg_n_2_23_s0.graph,8388608,Jones - Plassman(sequential),1,12.612,23
+rgg_n_2_23_s0.graph,8388608,Jones - Plassman standard(with threadpool),8,4.037,23
+rgg_n_2_23_s0.graph,8388608,Jones-Plassman standard (without threadpool),8,5.019,22
+rgg_n_2_23_s0.graph,8388608,Jones-Plassman standard (find and color): ,8,4.385,23
+ba10k2d.gra,10000,Greedy Sequential Coloring,1,0.001,8
+ba10k2d.gra,10000,Largest Degree First standard,8,0.007,5
+ba10k2d.gra,10000,Largest Degree First (find and color),8,0.006,5
+ba10k2d.gra,10000,Smallest Degree Last (sequential),1,0.004,3
+ba10k2d.gra,10000,Smallest Degree Last (sequential weighing),8,0.005,3
+ba10k2d.gra,10000,Jones - Plassman(sequential),1,0.004,8
+ba10k2d.gra,10000,Jones - Plassman standard(with threadpool),8,0.01,9
+ba10k2d.gra,10000,Jones-Plassman standard (without threadpool),8,0.582,8
+ba10k2d.gra,10000,Jones-Plassman standard (find and color): ,8,0.005,8
+ba10k5d.gra,10000,Greedy Sequential Coloring,1,0.003,13
+ba10k5d.gra,10000,Largest Degree First standard,8,0.014,7
+ba10k5d.gra,10000,Largest Degree First (find and color),8,0.01,7
+ba10k5d.gra,10000,Smallest Degree Last (sequential),1,0.007,8
+ba10k5d.gra,10000,Smallest Degree Last (sequential weighing),8,0.008,8
+ba10k5d.gra,10000,Jones - Plassman(sequential),1,0.011,12
+ba10k5d.gra,10000,Jones - Plassman standard(with threadpool),8,0.019,13
+ba10k5d.gra,10000,Jones-Plassman standard (without threadpool),8,1.067,12
+ba10k5d.gra,10000,Jones-Plassman standard (find and color): ,8,0.011,12
+agrocyc_dag_uniq.gra,12684,Greedy Sequential Coloring,1,0.001,5
+agrocyc_dag_uniq.gra,12684,Largest Degree First standard,8,0.005,4
+agrocyc_dag_uniq.gra,12684,Largest Degree First (find and color),8,0.005,4
+agrocyc_dag_uniq.gra,12684,Smallest Degree Last (sequential),1,0.003,5
+agrocyc_dag_uniq.gra,12684,Smallest Degree Last (sequential weighing),8,0.005,4
+agrocyc_dag_uniq.gra,12684,Jones - Plassman(sequential),1,0.002,5
+agrocyc_dag_uniq.gra,12684,Jones - Plassman standard(with threadpool),8,0.006,5
+agrocyc_dag_uniq.gra,12684,Jones-Plassman standard (without threadpool),8,0.27,6
+agrocyc_dag_uniq.gra,12684,Jones-Plassman standard (find and color): ,8,0.006,5
+amaze_dag_uniq.gra,3710,Greedy Sequential Coloring,1,0.001,4
+amaze_dag_uniq.gra,3710,Largest Degree First standard,8,0.005,4
+amaze_dag_uniq.gra,3710,Largest Degree First (find and color),8,0.003,4
+amaze_dag_uniq.gra,3710,Smallest Degree Last (sequential),1,0.001,4
+amaze_dag_uniq.gra,3710,Smallest Degree Last (sequential weighing),8,0.004,4
+amaze_dag_uniq.gra,3710,Jones - Plassman(sequential),1,0.001,4
+amaze_dag_uniq.gra,3710,Jones - Plassman standard(with threadpool),8,0.004,4
+amaze_dag_uniq.gra,3710,Jones-Plassman standard (without threadpool),8,0.193,4
+amaze_dag_uniq.gra,3710,Jones-Plassman standard (find and color): ,8,0.004,4
+anthra_dag_uniq.gra,12499,Greedy Sequential Coloring,1,0.002,5
+anthra_dag_uniq.gra,12499,Largest Degree First standard,8,0.005,4
+anthra_dag_uniq.gra,12499,Largest Degree First (find and color),8,0.005,4
+anthra_dag_uniq.gra,12499,Smallest Degree Last (sequential),1,0.002,4
+anthra_dag_uniq.gra,12499,Smallest Degree Last (sequential weighing),8,0.006,4
+anthra_dag_uniq.gra,12499,Jones - Plassman(sequential),1,0.003,5
+anthra_dag_uniq.gra,12499,Jones - Plassman standard(with threadpool),8,0.006,5
+anthra_dag_uniq.gra,12499,Jones-Plassman standard (without threadpool),8,0.245,5
+anthra_dag_uniq.gra,12499,Jones-Plassman standard (find and color): ,8,0.005,5
+ecoo_dag_uniq.gra,12620,Greedy Sequential Coloring,1,0.002,5
+ecoo_dag_uniq.gra,12620,Largest Degree First standard,8,0.007,4
+ecoo_dag_uniq.gra,12620,Largest Degree First (find and color),8,0.005,4
+ecoo_dag_uniq.gra,12620,Smallest Degree Last (sequential),1,0.003,4
+ecoo_dag_uniq.gra,12620,Smallest Degree Last (sequential weighing),8,0.005,4
+ecoo_dag_uniq.gra,12620,Jones - Plassman(sequential),1,0.003,6
+ecoo_dag_uniq.gra,12620,Jones - Plassman standard(with threadpool),8,0.007,6
+ecoo_dag_uniq.gra,12620,Jones-Plassman standard (without threadpool),8,0.293,6
+ecoo_dag_uniq.gra,12620,Jones-Plassman standard (find and color): ,8,0.005,5
+human_dag_uniq.gra,38811,Greedy Sequential Coloring,1,0.004,5
+human_dag_uniq.gra,38811,Largest Degree First standard,8,0.007,5
+human_dag_uniq.gra,38811,Largest Degree First (find and color),8,0.007,4
+human_dag_uniq.gra,38811,Smallest Degree Last (sequential),1,0.008,4
+human_dag_uniq.gra,38811,Smallest Degree Last (sequential weighing),8,0.008,4
+human_dag_uniq.gra,38811,Jones - Plassman(sequential),1,0.008,5
+human_dag_uniq.gra,38811,Jones - Plassman standard(with threadpool),8,0.008,5
+human_dag_uniq.gra,38811,Jones-Plassman standard (without threadpool),8,0.271,5
+human_dag_uniq.gra,38811,Jones-Plassman standard (find and color): ,8,0.008,5
+kegg_dag_uniq.gra,3617,Greedy Sequential Coloring,1,0.001,4
+kegg_dag_uniq.gra,3617,Largest Degree First standard,8,0.003,4
+kegg_dag_uniq.gra,3617,Largest Degree First (find and color),8,0.003,3
+kegg_dag_uniq.gra,3617,Smallest Degree Last (sequential),1,0.001,4
+kegg_dag_uniq.gra,3617,Smallest Degree Last (sequential weighing),8,0.005,4
+kegg_dag_uniq.gra,3617,Jones - Plassman(sequential),1,0.001,4
+kegg_dag_uniq.gra,3617,Jones - Plassman standard(with threadpool),8,0.005,4
+kegg_dag_uniq.gra,3617,Jones-Plassman standard (without threadpool),8,0.242,4
+kegg_dag_uniq.gra,3617,Jones-Plassman standard (find and color): ,8,0.004,4
+mtbrv_dag_uniq.gra,9602,Greedy Sequential Coloring,1,0.002,5
+mtbrv_dag_uniq.gra,9602,Largest Degree First standard,8,0.005,4
+mtbrv_dag_uniq.gra,9602,Largest Degree First (find and color),8,0.005,4
+mtbrv_dag_uniq.gra,9602,Smallest Degree Last (sequential),1,0.002,4
+mtbrv_dag_uniq.gra,9602,Smallest Degree Last (sequential weighing),8,0.004,4
+mtbrv_dag_uniq.gra,9602,Jones - Plassman(sequential),1,0.002,6
+mtbrv_dag_uniq.gra,9602,Jones - Plassman standard(with threadpool),8,0.005,6
+mtbrv_dag_uniq.gra,9602,Jones-Plassman standard (without threadpool),8,0.245,6
+mtbrv_dag_uniq.gra,9602,Jones-Plassman standard (find and color): ,8,0.005,6
+nasa_dag_uniq.gra,5605,Greedy Sequential Coloring,1,0.001,5
+nasa_dag_uniq.gra,5605,Largest Degree First standard,8,0.004,4
+nasa_dag_uniq.gra,5605,Largest Degree First (find and color),8,0.004,4
+nasa_dag_uniq.gra,5605,Smallest Degree Last (sequential),1,0.002,4
+nasa_dag_uniq.gra,5605,Smallest Degree Last (sequential weighing),8,0.005,4
+nasa_dag_uniq.gra,5605,Jones - Plassman(sequential),1,0.001,5
+nasa_dag_uniq.gra,5605,Jones - Plassman standard(with threadpool),8,0.006,5
+nasa_dag_uniq.gra,5605,Jones-Plassman standard (without threadpool),8,0.219,5
+nasa_dag_uniq.gra,5605,Jones-Plassman standard (find and color): ,8,0.004,5
+vchocyc_dag_uniq.gra,9491,Greedy Sequential Coloring,1,0.002,5
+vchocyc_dag_uniq.gra,9491,Largest Degree First standard,8,0.005,4
+vchocyc_dag_uniq.gra,9491,Largest Degree First (find and color),8,0.005,4
+vchocyc_dag_uniq.gra,9491,Smallest Degree Last (sequential),1,0.002,4
+vchocyc_dag_uniq.gra,9491,Smallest Degree Last (sequential weighing),8,0.005,4
+vchocyc_dag_uniq.gra,9491,Jones - Plassman(sequential),1,0.003,5
+vchocyc_dag_uniq.gra,9491,Jones - Plassman standard(with threadpool),8,0.008,5
+vchocyc_dag_uniq.gra,9491,Jones-Plassman standard (without threadpool),8,0.292,5
+vchocyc_dag_uniq.gra,9491,Jones-Plassman standard (find and color): ,8,0.005,5
+xmark_dag_uniq.gra,6080,Greedy Sequential Coloring,1,0.001,5
+xmark_dag_uniq.gra,6080,Largest Degree First standard,8,0.005,4
+xmark_dag_uniq.gra,6080,Largest Degree First (find and color),8,0.004,4
+xmark_dag_uniq.gra,6080,Smallest Degree Last (sequential),1,0.001,3
+xmark_dag_uniq.gra,6080,Smallest Degree Last (sequential weighing),8,0.004,3
+xmark_dag_uniq.gra,6080,Jones - Plassman(sequential),1,0.002,5
+xmark_dag_uniq.gra,6080,Jones - Plassman standard(with threadpool),8,0.007,4
+xmark_dag_uniq.gra,6080,Jones-Plassman standard (without threadpool),8,0.313,5
+xmark_dag_uniq.gra,6080,Jones-Plassman standard (find and color): ,8,0.005,6
+arXiv_sub_6000-1.gra,6000,Greedy Sequential Coloring,1,0.002,31
+arXiv_sub_6000-1.gra,6000,Largest Degree First standard,8,0.032,28
+arXiv_sub_6000-1.gra,6000,Largest Degree First (find and color),8,0.018,27
+arXiv_sub_6000-1.gra,6000,Smallest Degree Last (sequential),1,0.011,26
+arXiv_sub_6000-1.gra,6000,Smallest Degree Last (sequential weighing),8,0.02,27
+arXiv_sub_6000-1.gra,6000,Jones - Plassman(sequential),1,0.02,30
+arXiv_sub_6000-1.gra,6000,Jones - Plassman standard(with threadpool),8,0.03,30
+arXiv_sub_6000-1.gra,6000,Jones-Plassman standard (without threadpool),8,2.404,30
+arXiv_sub_6000-1.gra,6000,Jones-Plassman standard (find and color): ,8,0.019,29
+citeseer_sub_10720.gra,10720,Greedy Sequential Coloring,1,0.003,12
+citeseer_sub_10720.gra,10720,Largest Degree First standard,8,0.011,10
+citeseer_sub_10720.gra,10720,Largest Degree First (find and color),8,0.008,9
+citeseer_sub_10720.gra,10720,Smallest Degree Last (sequential),1,0.007,10
+citeseer_sub_10720.gra,10720,Smallest Degree Last (sequential weighing),8,0.009,10
+citeseer_sub_10720.gra,10720,Jones - Plassman(sequential),1,0.009,12
+citeseer_sub_10720.gra,10720,Jones - Plassman standard(with threadpool),8,0.014,11
+citeseer_sub_10720.gra,10720,Jones-Plassman standard (without threadpool),8,0.895,12
+citeseer_sub_10720.gra,10720,Jones-Plassman standard (find and color): ,8,0.009,11
+go_sub_6793.gra,6793,Greedy Sequential Coloring,1,0.001,8
+go_sub_6793.gra,6793,Largest Degree First standard,8,0.007,5
+go_sub_6793.gra,6793,Largest Degree First (find and color),8,0.005,6
+go_sub_6793.gra,6793,Smallest Degree Last (sequential),1,0.003,6
+go_sub_6793.gra,6793,Smallest Degree Last (sequential weighing),8,0.006,6
+go_sub_6793.gra,6793,Jones - Plassman(sequential),1,0.003,7
+go_sub_6793.gra,6793,Jones - Plassman standard(with threadpool),8,0.009,7
+go_sub_6793.gra,6793,Jones-Plassman standard (without threadpool),8,0.388,7
+go_sub_6793.gra,6793,Jones-Plassman standard (find and color): ,8,0.005,7
+pubmed_sub_9000-1.gra,9000,Greedy Sequential Coloring,1,0.002,14
+pubmed_sub_9000-1.gra,9000,Largest Degree First standard,8,0.017,9
+pubmed_sub_9000-1.gra,9000,Largest Degree First (find and color),8,0.01,9
+pubmed_sub_9000-1.gra,9000,Smallest Degree Last (sequential),1,0.006,10
+pubmed_sub_9000-1.gra,9000,Smallest Degree Last (sequential weighing),8,0.008,10
+pubmed_sub_9000-1.gra,9000,Jones - Plassman(sequential),1,0.011,14
+pubmed_sub_9000-1.gra,9000,Jones - Plassman standard(with threadpool),8,0.022,14
+pubmed_sub_9000-1.gra,9000,Jones-Plassman standard (without threadpool),8,1.365,13
+pubmed_sub_9000-1.gra,9000,Jones-Plassman standard (find and color): ,8,0.012,14
+yago_sub_6642.gra,6642,Greedy Sequential Coloring,1,0.002,9
+yago_sub_6642.gra,6642,Largest Degree First standard,8,0.008,6
+yago_sub_6642.gra,6642,Largest Degree First (find and color),8,0.006,6
+yago_sub_6642.gra,6642,Smallest Degree Last (sequential),1,0.004,7
+yago_sub_6642.gra,6642,Smallest Degree Last (sequential weighing),8,0.007,7
+yago_sub_6642.gra,6642,Jones - Plassman(sequential),1,0.009,9
+yago_sub_6642.gra,6642,Jones - Plassman standard(with threadpool),8,0.021,9
+yago_sub_6642.gra,6642,Jones-Plassman standard (without threadpool),8,1.473,8
+yago_sub_6642.gra,6642,Jones-Plassman standard (find and color): ,8,0.01,9
+arXiv_sub_6000-1.gra,6000,Greedy Sequential Coloring,1,0.002,31
+arXiv_sub_6000-1.gra,6000,Largest Degree First standard,8,0.032,27
+arXiv_sub_6000-1.gra,6000,Largest Degree First (find and color),8,0.018,29
+arXiv_sub_6000-1.gra,6000,Smallest Degree Last (sequential),1,0.011,27
+arXiv_sub_6000-1.gra,6000,Smallest Degree Last (sequential weighing),8,0.018,26
+arXiv_sub_6000-1.gra,6000,Jones - Plassman(sequential),1,0.017,31
+arXiv_sub_6000-1.gra,6000,Jones - Plassman standard(with threadpool),8,0.031,29
+arXiv_sub_6000-1.gra,6000,Jones-Plassman standard (without threadpool),8,2.608,30
+arXiv_sub_6000-1.gra,6000,Jones-Plassman standard (find and color): ,8,0.019,29
+citeseer_sub_10720.gra,10720,Greedy Sequential Coloring,1,0.002,12
+citeseer_sub_10720.gra,10720,Largest Degree First standard,8,0.012,9
+citeseer_sub_10720.gra,10720,Largest Degree First (find and color),8,0.007,10
+citeseer_sub_10720.gra,10720,Smallest Degree Last (sequential),1,0.007,10
+citeseer_sub_10720.gra,10720,Smallest Degree Last (sequential weighing),8,0.011,10
+citeseer_sub_10720.gra,10720,Jones - Plassman(sequential),1,0.009,12
+citeseer_sub_10720.gra,10720,Jones - Plassman standard(with threadpool),8,0.015,12
+citeseer_sub_10720.gra,10720,Jones-Plassman standard (without threadpool),8,0.974,11
+citeseer_sub_10720.gra,10720,Jones-Plassman standard (find and color): ,8,0.01,12
+go_sub_6793.gra,6793,Greedy Sequential Coloring,1,0.001,8
+go_sub_6793.gra,6793,Largest Degree First standard,8,0.006,5
+go_sub_6793.gra,6793,Largest Degree First (find and color),8,0.005,5
+go_sub_6793.gra,6793,Smallest Degree Last (sequential),1,0.003,6
+go_sub_6793.gra,6793,Smallest Degree Last (sequential weighing),8,0.005,6
+go_sub_6793.gra,6793,Jones - Plassman(sequential),1,0.003,7
+go_sub_6793.gra,6793,Jones - Plassman standard(with threadpool),8,0.008,8
+go_sub_6793.gra,6793,Jones-Plassman standard (without threadpool),8,0.44,6
+go_sub_6793.gra,6793,Jones-Plassman standard (find and color): ,8,0.006,7
+pubmed_sub_9000-1.gra,9000,Greedy Sequential Coloring,1,0.002,14
+pubmed_sub_9000-1.gra,9000,Largest Degree First standard,8,0.018,9
+pubmed_sub_9000-1.gra,9000,Largest Degree First (find and color),8,0.01,10
+pubmed_sub_9000-1.gra,9000,Smallest Degree Last (sequential),1,0.005,10
+pubmed_sub_9000-1.gra,9000,Smallest Degree Last (sequential weighing),8,0.008,10
+pubmed_sub_9000-1.gra,9000,Jones - Plassman(sequential),1,0.012,14
+pubmed_sub_9000-1.gra,9000,Jones - Plassman standard(with threadpool),8,0.021,14
+pubmed_sub_9000-1.gra,9000,Jones-Plassman standard (without threadpool),8,1.406,14
+pubmed_sub_9000-1.gra,9000,Jones-Plassman standard (find and color): ,8,0.012,13
+yago_sub_6642.gra,6642,Greedy Sequential Coloring,1,0.001,9
+yago_sub_6642.gra,6642,Largest Degree First standard,8,0.008,6
+yago_sub_6642.gra,6642,Largest Degree First (find and color),8,0.006,6
+yago_sub_6642.gra,6642,Smallest Degree Last (sequential),1,0.003,7
+yago_sub_6642.gra,6642,Smallest Degree Last (sequential weighing),8,0.006,7
+yago_sub_6642.gra,6642,Jones - Plassman(sequential),1,0.009,9
+yago_sub_6642.gra,6642,Jones - Plassman standard(with threadpool),8,0.021,9
+yago_sub_6642.gra,6642,Jones-Plassman standard (without threadpool),8,1.336,10
+yago_sub_6642.gra,6642,Jones-Plassman standard (find and color): ,8,0.01,8
+agrocyc_dag_uniq.gra,12684,Greedy Sequential Coloring,1,0.001,5
+agrocyc_dag_uniq.gra,12684,Largest Degree First standard,8,0.006,4
+agrocyc_dag_uniq.gra,12684,Largest Degree First (find and color),8,0.004,4
+agrocyc_dag_uniq.gra,12684,Smallest Degree Last (sequential),1,0.003,5
+agrocyc_dag_uniq.gra,12684,Smallest Degree Last (sequential weighing),8,0.005,5
+agrocyc_dag_uniq.gra,12684,Jones - Plassman(sequential),1,0.003,5
+agrocyc_dag_uniq.gra,12684,Jones - Plassman standard(with threadpool),8,0.007,5
+agrocyc_dag_uniq.gra,12684,Jones-Plassman standard (without threadpool),8,0.271,5
+agrocyc_dag_uniq.gra,12684,Jones-Plassman standard (find and color): ,8,0.004,5
+amaze_dag_uniq.gra,3710,Greedy Sequential Coloring,1,0,4
+amaze_dag_uniq.gra,3710,Largest Degree First standard,8,0.004,4
+amaze_dag_uniq.gra,3710,Largest Degree First (find and color),8,0.004,4
+amaze_dag_uniq.gra,3710,Smallest Degree Last (sequential),1,0.001,4
+amaze_dag_uniq.gra,3710,Smallest Degree Last (sequential weighing),8,0.003,4
+amaze_dag_uniq.gra,3710,Jones - Plassman(sequential),1,0.001,4
+amaze_dag_uniq.gra,3710,Jones - Plassman standard(with threadpool),8,0.003,4
+amaze_dag_uniq.gra,3710,Jones-Plassman standard (without threadpool),8,0.173,4
+amaze_dag_uniq.gra,3710,Jones-Plassman standard (find and color): ,8,0.003,4
+anthra_dag_uniq.gra,12499,Greedy Sequential Coloring,1,0.001,5
+anthra_dag_uniq.gra,12499,Largest Degree First standard,8,0.004,4
+anthra_dag_uniq.gra,12499,Largest Degree First (find and color),8,0.005,4
+anthra_dag_uniq.gra,12499,Smallest Degree Last (sequential),1,0.003,4
+anthra_dag_uniq.gra,12499,Smallest Degree Last (sequential weighing),8,0.005,5
+anthra_dag_uniq.gra,12499,Jones - Plassman(sequential),1,0.002,5
+anthra_dag_uniq.gra,12499,Jones - Plassman standard(with threadpool),8,0.006,5
+anthra_dag_uniq.gra,12499,Jones-Plassman standard (without threadpool),8,0.27,5
+anthra_dag_uniq.gra,12499,Jones-Plassman standard (find and color): ,8,0.005,5
+ecoo_dag_uniq.gra,12620,Greedy Sequential Coloring,1,0.002,5
+ecoo_dag_uniq.gra,12620,Largest Degree First standard,8,0.006,4
+ecoo_dag_uniq.gra,12620,Largest Degree First (find and color),8,0.004,4
+ecoo_dag_uniq.gra,12620,Smallest Degree Last (sequential),1,0.003,4
+ecoo_dag_uniq.gra,12620,Smallest Degree Last (sequential weighing),8,0.005,4
+ecoo_dag_uniq.gra,12620,Jones - Plassman(sequential),1,0.002,5
+ecoo_dag_uniq.gra,12620,Jones - Plassman standard(with threadpool),8,0.006,5
+ecoo_dag_uniq.gra,12620,Jones-Plassman standard (without threadpool),8,0.342,5
+ecoo_dag_uniq.gra,12620,Jones-Plassman standard (find and color): ,8,0.006,5
+human_dag_uniq.gra,38811,Greedy Sequential Coloring,1,0.003,5
+human_dag_uniq.gra,38811,Largest Degree First standard,8,0.006,5
+human_dag_uniq.gra,38811,Largest Degree First (find and color),8,0.007,5
+human_dag_uniq.gra,38811,Smallest Degree Last (sequential),1,0.007,4
+human_dag_uniq.gra,38811,Smallest Degree Last (sequential weighing),8,0.009,5
+human_dag_uniq.gra,38811,Jones - Plassman(sequential),1,0.006,5
+human_dag_uniq.gra,38811,Jones - Plassman standard(with threadpool),8,0.008,5
+human_dag_uniq.gra,38811,Jones-Plassman standard (without threadpool),8,0.321,5
+human_dag_uniq.gra,38811,Jones-Plassman standard (find and color): ,8,0.009,5
+kegg_dag_uniq.gra,3617,Greedy Sequential Coloring,1,0,4
+kegg_dag_uniq.gra,3617,Largest Degree First standard,8,0.005,4
+kegg_dag_uniq.gra,3617,Largest Degree First (find and color),8,0.004,4
+kegg_dag_uniq.gra,3617,Smallest Degree Last (sequential),1,0.001,4
+kegg_dag_uniq.gra,3617,Smallest Degree Last (sequential weighing),8,0.005,4
+kegg_dag_uniq.gra,3617,Jones - Plassman(sequential),1,0.001,4
+kegg_dag_uniq.gra,3617,Jones - Plassman standard(with threadpool),8,0.005,4
+kegg_dag_uniq.gra,3617,Jones-Plassman standard (without threadpool),8,0.193,4
+kegg_dag_uniq.gra,3617,Jones-Plassman standard (find and color): ,8,0.004,5
+mtbrv_dag_uniq.gra,9602,Greedy Sequential Coloring,1,0.001,5
+mtbrv_dag_uniq.gra,9602,Largest Degree First standard,8,0.006,4
+mtbrv_dag_uniq.gra,9602,Largest Degree First (find and color),8,0.004,4
+mtbrv_dag_uniq.gra,9602,Smallest Degree Last (sequential),1,0.002,4
+mtbrv_dag_uniq.gra,9602,Smallest Degree Last (sequential weighing),8,0.004,4
+mtbrv_dag_uniq.gra,9602,Jones - Plassman(sequential),1,0.003,6
+mtbrv_dag_uniq.gra,9602,Jones - Plassman standard(with threadpool),8,0.005,6
+mtbrv_dag_uniq.gra,9602,Jones-Plassman standard (without threadpool),8,0.266,5
+mtbrv_dag_uniq.gra,9602,Jones-Plassman standard (find and color): ,8,0.005,5
+nasa_dag_uniq.gra,5605,Greedy Sequential Coloring,1,0.001,5
+nasa_dag_uniq.gra,5605,Largest Degree First standard,8,0.005,4
+nasa_dag_uniq.gra,5605,Largest Degree First (find and color),8,0.004,4
+nasa_dag_uniq.gra,5605,Smallest Degree Last (sequential),1,0.002,4
+nasa_dag_uniq.gra,5605,Smallest Degree Last (sequential weighing),8,0.004,4
+nasa_dag_uniq.gra,5605,Jones - Plassman(sequential),1,0.002,5
+nasa_dag_uniq.gra,5605,Jones - Plassman standard(with threadpool),8,0.006,5
+nasa_dag_uniq.gra,5605,Jones-Plassman standard (without threadpool),8,0.245,5
+nasa_dag_uniq.gra,5605,Jones-Plassman standard (find and color): ,8,0.004,6
+vchocyc_dag_uniq.gra,9491,Greedy Sequential Coloring,1,0.001,5
+vchocyc_dag_uniq.gra,9491,Largest Degree First standard,8,0.005,4
+vchocyc_dag_uniq.gra,9491,Largest Degree First (find and color),8,0.005,4
+vchocyc_dag_uniq.gra,9491,Smallest Degree Last (sequential),1,0.002,4
+vchocyc_dag_uniq.gra,9491,Smallest Degree Last (sequential weighing),8,0.004,4
+vchocyc_dag_uniq.gra,9491,Jones - Plassman(sequential),1,0.002,5
+vchocyc_dag_uniq.gra,9491,Jones - Plassman standard(with threadpool),8,0.006,6
+vchocyc_dag_uniq.gra,9491,Jones-Plassman standard (without threadpool),8,0.269,6
+vchocyc_dag_uniq.gra,9491,Jones-Plassman standard (find and color): ,8,0.004,5
+xmark_dag_uniq.gra,6080,Greedy Sequential Coloring,1,0.001,5
+xmark_dag_uniq.gra,6080,Largest Degree First standard,8,0.007,4
+xmark_dag_uniq.gra,6080,Largest Degree First (find and color),8,0.004,4
+xmark_dag_uniq.gra,6080,Smallest Degree Last (sequential),1,0.001,3
+xmark_dag_uniq.gra,6080,Smallest Degree Last (sequential weighing),8,0.005,3
+xmark_dag_uniq.gra,6080,Jones - Plassman(sequential),1,0.001,5
+xmark_dag_uniq.gra,6080,Jones - Plassman standard(with threadpool),8,0.007,5
+xmark_dag_uniq.gra,6080,Jones-Plassman standard (without threadpool),8,0.323,5
+xmark_dag_uniq.gra,6080,Jones-Plassman standard (find and color): ,8,0.005,5
+Run performed on Intel i7-8550U
